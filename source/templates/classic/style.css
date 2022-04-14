@@ -271,6 +271,12 @@
     margin-right: 6px;
   }
 
+  .footnote {
+    width: 100%;
+    justify-content: flex-end;
+    font-size: 12px;
+  }
+
 /* Follow-up */
   .followup.legend {
     font-size: 12px;
@@ -329,15 +335,15 @@
   }
 
 /* Habits */
-  .habits {
+  .habits .facts {
     margin: 0;
     list-style-type: none;
     padding-left: 37px;
   }
 
-/* Stargazers */
+/* Chartist */
 /* purgecss ignore */
-  .stargazers .chartist .ct-post {
+  .chartist .ct-post {
     fill: rgba(127, 127, 127, 0.8) !important;
     color: rgba(127, 127, 127, 0.8) !important;
     font-size: 9px;
@@ -480,6 +486,9 @@
     line-height: 14px;
     height: 14px;
     font-weight: 600;
+  }
+  .track .name, .track .artist {
+    width: 387px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -494,9 +503,6 @@
   svg.large .tracklist {
     flex-direction: row;
     flex-wrap: wrap;
-  }
-  svg.large .track {
-    width: 50%;
   }
 
 /* Posts plugin */
@@ -1065,6 +1071,9 @@
   .sponsors .avatar {
     margin: 2px;
   }
+  .sponsors .avatar.past {
+    opacity: 0.3;
+  }
 
 /* Stackoverflow */
   .stackoverflow {
@@ -1358,6 +1367,10 @@
   .ct-chart {
     display: flex;
     margin-left: -12px;
+  }
+  .ct-chart-pie .ct-label {
+    fill: rgba(255, 255, 255, 0.8) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
   }
   .ct-line {
     stroke-width: 2px !important;

@@ -249,6 +249,12 @@ inputs:
     description: Display threshold (percentage)
     default: <default-value>
   
+  plugin_languages_other:
+    description: >-
+      Group unknown, ignored and over-limit languages into a single "Other"
+      category
+    default: <default-value>
+  
   plugin_languages_colors:
     description: Custom languages colors
     default: <default-value>
@@ -361,6 +367,10 @@ inputs:
     description: Toggle charts display
     default: <default-value>
   
+  plugin_habits_charts_type:
+    description: Charts display type
+    default: <default-value>
+  
   plugin_habits_trim:
     description: Trim unused hours on charts
     default: <default-value>
@@ -463,6 +473,10 @@ inputs:
   
   plugin_people_identicons:
     description: Toggle identicons display
+    default: <default-value>
+  
+  plugin_people_identicons_hide:
+    description: Hide identicons display
     default: <default-value>
   
   plugin_people_size:
@@ -729,6 +743,10 @@ inputs:
   
   plugin_sponsors_sections:
     description: Displayed sections
+    default: <default-value>
+  
+  plugin_sponsors_past:
+    description: Display past sponsorships
     default: <default-value>
   
   # ====================================================================================
@@ -1007,6 +1025,10 @@ inputs:
   
   plugin_wakatime_user:
     description: WakaTime username
+    default: <default-value>
+  
+  plugin_wakatime_languages_other:
+    description: Include other languages
     default: <default-value>
   
   # ====================================================================================

@@ -12,16 +12,17 @@ export default async function({login, data, imports, q, rest, account}, {enabled
     //Context
     let context = {mode:"user"}
     if (q.repo) {
-      console.debug(`metrics/compute/${login}/plugins > activity > switched to repository mode`)
+      console.debug(`metrics/compute/${login}/plugins > languages > switched to repository mode`)
       context = {...context, mode:"repository"}
     }
 
     //Load inputs
-    let {ignored, skipped, colors, aliases, details, threshold, limit, indepth, "analysis.timeout":timeout, sections, categories, "recent.categories":_recent_categories, "recent.load":_recent_load, "recent.days":_recent_days} = imports.metadata.plugins.languages.inputs({
-      data,
-      account,
-      q,
-    })
+    let {ignored, skipped, other, colors, aliases, details, threshold, limit, indepth, "analysis.timeout":timeout, sections, categories, "recent.categories":_recent_categories, "recent.load":_recent_load, "recent.days":_recent_days} = imports.metadata.plugins.languages
+      .inputs({
+        data,
+        account,
+        q,
+      })
     threshold = (Number(threshold.replace(/%$/, "")) || 0) / 100
     skipped.push(...data.shared["repositories.skipped"])
     if (!limit)
@@ -78,12 +79,31 @@ export default async function({login, data, imports, q, rest, account}, {enabled
 
       //Indepth mode
       if (indepth) {
+        //Fetch gpg keys (web-flow is GitHub's public key when making changes from web ui)
+        const gpg = []
+        try {
+          for (const username of [login, "web-flow"]) {
+            const {data:keys} = await rest.users.listGpgKeysForUser({username})
+            gpg.push(...keys.map(({key_id:id, raw_key:pub, emails}) => ({id, pub, emails})))
+            if (username === login) {
+              for (const {email} of gpg.flatMap(({emails}) => emails)) {
+                console.debug(`metrics/compute/${login}/plugins > languages > auto-adding ${email} to commits_authoring (fetched from gpg)`)
+                data.shared["commits.authoring"].push(email)
+              }
+            }
+          }
+        }
+        catch (error) {
+          console.debug(`metrics/compute/${login}/plugins > languages > ${error}`)
+        }
+
+        //Analyze languages
         try {
           console.debug(`metrics/compute/${login}/plugins > languages > switching to indepth mode (this may take some time)`)
           const existingColors = languages.colors
-          Object.assign(languages, await indepth_analyzer({login, data, imports, repositories}, {skipped, categories, timeout}))
+          Object.assign(languages, await indepth_analyzer({login, data, imports, repositories, gpg}, {skipped, categories, timeout}))
           Object.assign(languages.colors, existingColors)
-          console.debug(`metrics/compute/${login}/plugins > languages > indepth analysis missed ${languages.missed} commits`)
+          console.debug(`metrics/compute/${login}/plugins > languages > indepth analysis missed ${languages.missed.commits} commits`)
         }
         catch (error) {
           console.debug(`metrics/compute/${login}/plugins > languages > ${error}`)
@@ -106,10 +126,21 @@ export default async function({login, data, imports, q, rest, account}, {enabled
     }
 
     //Compute languages stats
-    for (const {section, stats = {}, lines = {}, total = 0} of [{section:"favorites", stats:languages.stats, lines:languages.lines, total:languages.total}, {section:"recent", ...languages["stats.recent"]}]) {
+    for (const {section, stats = {}, lines = {}, missed = {bytes:0}, total = 0} of [{section:"favorites", stats:languages.stats, lines:languages.lines, total:languages.total, missed:languages.missed}, {section:"recent", ...languages["stats.recent"]}]) {
       console.debug(`metrics/compute/${login}/plugins > languages > computing stats ${section}`)
       languages[section] = Object.entries(stats).filter(([name]) => !ignored.includes(name.toLocaleLowerCase())).sort(([_an, a], [_bn, b]) => b - a).slice(0, limit).map(([name, value]) => ({name, value, size:value, color:languages.colors[name], x:0})).filter(({value}) => value / total > threshold
       )
+      if (other) {
+        let value = indepth ? missed.bytes : Object.entries(stats).filter(([name]) => !Object.values(languages[section]).map(({name}) => name).includes(name)).reduce((a, [_, b]) => a + b, 0)
+        if (value) {
+          if (languages[section].length === limit) {
+            const {size} = languages[section].pop()
+            value += size
+          }
+          //dprint-ignore-next-line
+          languages[section].push({name:"Other", value, size:value, get lines() { return missed.lines }, set lines(_) { }, x:0}) //eslint-disable-line brace-style, no-empty-function, max-statements-per-line
+        }
+      }
       const visible = {total:Object.values(languages[section]).map(({size}) => size).reduce((a, b) => a + b, 0)}
       for (let i = 0; i < languages[section].length; i++) {
         const {name} = languages[section][i]
