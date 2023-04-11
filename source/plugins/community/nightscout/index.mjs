@@ -1,16 +1,16 @@
 //Setup
-export default async function({q, imports, data, account}, {enabled = false} = {}) {
+export default async function({q, imports, data, account}, {enabled = false, extras = false} = {}) {
   //Plugin execution
   try {
     //Check if plugin is enabled and requirements are met
-    if ((!enabled) || (!q.nightscout))
+    if ((!q.nightscout) || (!imports.metadata.plugins.nightscout.enabled(enabled, {extras})))
       return null
 
     //Load inputs
     let {url, datapoints, lowalert, highalert, urgentlowalert, urgenthighalert} = imports.metadata.plugins.nightscout.inputs({data, account, q})
 
     if (!url || url === "https://example.herokuapp.com")
-      throw {error:{message:"Nightscout site URL isn't set!"}}
+      throw {error: {message: "Nightscout URL is not set"}}
     if (url.substring(url.length - 1) !== "/")
       url += "/"
     if (url.substring(0, 7) === "http://")
@@ -28,9 +28,9 @@ export default async function({q, imports, data, account}, {enabled = false} = {
       resp.data[i].arrowHumanReadable = directionArrow(resp.data[i].direction)
       resp.data[i].timeUTCHumanReadable = `${addZero(date.getUTCHours())}:${addZero(date.getUTCMinutes())}`
       /*
-           * Add colors and alert names
-           * TODO: Maybe make colors better themed instead of just the "github style" - red and yellow could fit better than darker shades of green
-           */
+       * Add colors and alert names
+       * TODO: Maybe make colors better themed instead of just the "github style" - red and yellow could fit better than darker shades of green
+       */
       let color = "#40c463"
       let alertName = "Normal"
       if (sgv >= urgenthighalert || sgv <= urgentlowalert) {
@@ -44,13 +44,11 @@ export default async function({q, imports, data, account}, {enabled = false} = {
       resp.data[i].color = color
       resp.data[i].alert = alertName
     }
-    return {data:resp.data.reverse()}
+    return {data: resp.data.reverse()}
   }
   //Handle errors
   catch (error) {
-    if (error.error?.message)
-      throw error
-    throw {error:{message:"An error occured", instance:error}}
+    throw imports.format.error(error)
   }
 }
 

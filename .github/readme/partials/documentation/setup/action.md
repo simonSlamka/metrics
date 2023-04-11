@@ -16,15 +16,19 @@ Its `README.md` will be displayed on your user profile:
 
 ## 1️ Create a GitHub personal token
 
+> 💡 A GitHub personal token is required since this action will fetch data that cannot be accessed through repository-scoped tokens (like [`${{ secrets.GITHUB_TOKEN }}` or `${{ github.token }}`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#about-the-github_token-secret)) such as users, organizations, issues, pull requests, comments, commits, activity, etc.
+
 From the `Developer settings` of your account settings, select `Personal access tokens` to create a new token.
 
 No scopes are required, but additional one may be required depending on which features will be used. Each plugin documentation enumerates which scopes are required to make it work.
 
-A a general rule, the following scopes may be required:
+As a general rule, the following scopes may be required:
 - `public_repo` for some plugins
 - `read:org` for all organizations related metrics
 - `repo` for all private repositories related metrics
   - `read:user` for some private repositories related metrics
+- `read:packages` for some packages related metrics
+- `read:project` for some projects related metrics
 - `gist` for publishing renders to gists instead of a repository
 
 > 💡 For security reasons, it is advised to always use the least amount of scopes. It is possible to prevent security issues by [forking this repository](https://github.com/lowlighter/metrics/fork) and using it in your workflow instead (more information available in step 3)
@@ -64,16 +68,20 @@ on:
 jobs:
   github-metrics:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: lowlighter/metrics@latest
         with:
           token: ${{ secrets.METRICS_TOKEN }}
 ```
 
-Rendered metrics will be committed to repository on each run.
+Default output action is to commit rendered metrics to target repository on each run.
 
 ![Action update example](/.github/readme/imgs/example_action_update.light.png#gh-light-mode-only)
 ![Action update example](/.github/readme/imgs/example_action_update.dark.png#gh-dark-mode-only)
+
+Use [`output_action`](/source/plugins/core/README.md#-configuring-output-action) to change this behaviour to use either pull requests, gists or manually handle renders.
 
 ### 3️.1️ Choosing between `@latest`, `@master`/`@main`, a fork or a pinned version
 
@@ -120,6 +128,13 @@ Update profile `README.md` to include rendered image (filename may differ if `fi
 *Example: add rendered image with html for more customization*
 ```html
 <img align="center" src="/github-metrics.svg" alt="Metrics" width="400">
+```
+
+*Example: add rendered image and prevent GitHub from auto linking to the image*
+```html
+<picture>
+  <img src="/github-metrics.svg" alt="Metrics">
+</picture>
 ```
 
 *Example: add rendered image when using `config_display: columns`*

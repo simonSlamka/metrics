@@ -1,5 +1,5 @@
 /**Mocked data */
-export default function({ faker }, target, that, [{ username: login, page, per_page }]) {
+export default async function({faker}, target, that, [{username: login, page, per_page}]) {
   console.debug("metrics/compute/mocks > mocking rest api result > rest.activity.listEventsForAuthenticatedUser")
   return ({
     status: 200,
@@ -71,7 +71,7 @@ export default function({ faker }, target, that, [{ username: login, page, per_p
           name: `${faker.random.word()}/${faker.random.word()}`,
         },
         payload: {
-          action: faker.random.arrayElement(["opened", "closed", "reopened"]),
+          action: faker.helpers.arrayElement(["opened", "closed", "reopened"]),
           issue: {
             number: 2,
             title: faker.lorem.sentence(),
@@ -221,7 +221,7 @@ export default function({ faker }, target, that, [{ username: login, page, per_p
         },
         payload: {
           ref: faker.lorem.slug(),
-          ref_type: faker.random.arrayElement(["tag", "branch"]),
+          ref_type: faker.helpers.arrayElement(["tag", "branch"]),
           master_branch: "master",
         },
         created_at: faker.date.recent(7),
@@ -236,7 +236,7 @@ export default function({ faker }, target, that, [{ username: login, page, per_p
         repo: {
           name: "lowlighter/metrics",
         },
-        payload: { action: "started" },
+        payload: {action: "started"},
         created_at: faker.date.recent(7),
         public: true,
       },
@@ -251,7 +251,7 @@ export default function({ faker }, target, that, [{ username: login, page, per_p
         },
         payload: {
           ref: faker.lorem.slug(),
-          ref_type: faker.random.arrayElement(["tag", "branch"]),
+          ref_type: faker.helpers.arrayElement(["tag", "branch"]),
         },
         created_at: faker.date.recent(7),
         public: true,
@@ -292,7 +292,7 @@ export default function({ faker }, target, that, [{ username: login, page, per_p
           name: `${faker.random.word()}/${faker.random.word()}`,
         },
         payload: {
-          action: faker.random.arrayElement(["opened", "closed"]),
+          action: faker.helpers.arrayElement(["opened", "closed"]),
           number: 5,
           pull_request: {
             user: {

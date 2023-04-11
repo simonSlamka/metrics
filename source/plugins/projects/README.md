@@ -1,7 +1,11 @@
 <!--header-->
 <table>
-  <tr><th colspan="2"><h3>🗂️ Active projects</h3></th></tr>
-  <tr><td colspan="2" align="center"><p>This plugin displays progress of your profile and repository projects.</p>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><th colspan="2"><h3>🗂️ GitHub projects</h3></th></tr>
+  <tr><td colspan="2" align="center"><p>This plugin displays progress of profile and repository projects.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://github.com">GitHub</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -11,7 +15,7 @@
     <td><code>👤 Users</code> <code>👥 Organizations</code> <code>📓 Repositories</code></td>
   </tr>
   <tr>
-    <td><code>🔑 (scopeless)</code> <code>🔑 public_repo</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>repo (optional)</code></td>
+    <td><code>🔑 (scopeless)</code> <code>🔑 public_repo</code> <code>🔑 read:project</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>read:packages (optional)</code> <code>repo (optional)</code></td>
   </tr>
   <tr>
     <td colspan="2" align="center">
@@ -27,7 +31,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_projects</code></h4></td>
@@ -42,7 +46,7 @@
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_projects_limit</code></h4></td>
     <td rowspan="2"><p>Display limit</p>
-<p>Note that <code>plugin_projects_repositories</code> is not affected by this option</p>
+<p>Projects defined by <a href="/source/plugins/projects/README.md#plugin_projects_repositories"><code>plugin_projects_repositories</code></a> are not affected by this option</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -55,8 +59,11 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_projects_repositories</code></h4></td>
-    <td rowspan="2"><p>List of repositories projects</p>
+    <td rowspan="2"><p>Featured repositories projects</p>
 <p>Use the following syntax for each project <code>:user/:repo/projects/:project_id</code></p>
+<blockquote>
+<p>ℹ️ <a href="https://docs.github.com/en/issues/trying-out-the-new-projects-experience/about-projects">GitHub projects (beta)</a> needs to use the same syntax as above and repository must specified repository must be linked to given project.</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -67,7 +74,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_projects_descriptions</code></h4></td>
-    <td rowspan="2"><p>Toggle projects descriptions display</p>
+    <td rowspan="2"><p>Projects descriptions</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>

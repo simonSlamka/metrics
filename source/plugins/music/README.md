@@ -1,8 +1,12 @@
 <!--header-->
 <table>
-  <tr><th colspan="2"><h3>🎼 Music plugin</h3></th></tr>
-  <tr><td colspan="2" align="center"><p>This plugin can display top and recently listened music tracks or from a random playlist.</p>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><th colspan="2"><h3>🎼 Music activity and suggestions</h3></th></tr>
+  <tr><td colspan="2" align="center"><p>This plugin can display top and recently listened music tracks or titles from a random playlist.</p>
 <p>Different music providers are supported.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with any of the supported provider.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -29,7 +33,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_music</code></h4></td>
@@ -37,7 +41,11 @@
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.run.puppeteer.scrapping</i></li>
+</ul>
+<b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -50,7 +58,7 @@
 <li><code>lastfm</code>: Last.fm</li>
 <li><code>youtube</code>: YouTube Music</li>
 </ul>
-<p>This setting is optional when using <code>plugin_music_mode: playlist</code> (provider will be auto-detected from <code>plugin_music_playlist</code> URL)</p>
+<p>This setting is optional when using <a href="/source/plugins/music/README.md#plugin_music_mode"><code>plugin_music_mode: playlist</code></a> (provider will be auto-detected from <a href="/source/plugins/music/README.md#plugin_music_playlist"><code>plugin_music_playlist</code></a> URL)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -72,8 +80,23 @@
   </tr>
   <tr>
     <td nowrap="nowrap">🔐 Token<br>
+🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.api.music.any</i></li>
+</ul>
 <b>type:</b> <code>token</code>
 <br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>plugin_music_user</code></h4></td>
+    <td rowspan="2"><p>Music provider username</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap">⏯️ Cannot be preset<br>
+<b>type:</b> <code>string</code>
+<br>
+<b>default:</b> <code>→ User login</code><br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_music_mode</code></h4></td>
@@ -83,7 +106,7 @@
 <li><code>recent</code>: display recently listened tracks</li>
 <li><code>top</code>: display top listened artists/tracks</li>
 </ul>
-<p>If <code>plugin_music_playlist</code> is specifed, the default value is <code>playlist</code>, else it is <code>recent</code></p>
+<p>If <a href="/source/plugins/music/README.md#plugin_music_playlist"><code>plugin_music_playlist</code></a> is specified, the default value is <code>playlist</code>, else it is <code>recent</code></p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -117,7 +140,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_music_played_at</code></h4></td>
-    <td rowspan="2"><p>Recently played - Toggle last played timestamp display</p>
+    <td rowspan="2"><p>Recently played - Last played timestamp</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -127,7 +150,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_music_time_range</code></h4></td>
-    <td rowspan="2"><p>Top tracks - Time range for <code>top</code> mode</p>
+    <td rowspan="2"><p>Top tracks - Time range</p>
 <ul>
 <li><code>short</code>: 4 weeks</li>
 <li><code>medium</code>: 6 months</li>
@@ -155,17 +178,6 @@
 <br>
 <b>default:</b> tracks<br>
 <b>allowed values:</b><ul><li>tracks</li><li>artists</li></ul></td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap"><h4><code>plugin_music_user</code></h4></td>
-    <td rowspan="2"><p>Music provider username</p>
-<img width="900" height="1" alt=""></td>
-  </tr>
-  <tr>
-    <td nowrap="nowrap">⏯️ Cannot be preset<br>
-<b>type:</b> <code>string</code>
-<br>
-<b>default:</b> <code>→ User login</code><br></td>
   </tr>
 </table>
 <!--/options-->
@@ -250,7 +262,7 @@ Extract the source link from the code pasted in your clipboard:
 
 *(Not available)*
 
-> 😥 Unfortunately I wasn't able to find a workaround to avoid paying the $99 fee for the developer program, even using workarounds like *smart playlists*, *shortcuts* and other stuff. However if you really want this feature, you could [sponsor me](github.com/sponsors/lowlighter) and I could eventually invest in a developper account with enough money, implement it and also eventually offer service on the shared instance
+> 😥 Unfortunately I wasn't able to find a workaround to avoid paying the $99 fee for the developer program, even using workarounds like *smart playlists*, *shortcuts* and other stuff. However if you really want this feature, you could [sponsor me](github.com/sponsors/lowlighter) and I could eventually invest in a developer account with enough money, implement it and also eventually offer service on the shared instance
 
 ### 🔗 Get an embed playlist url for `plugin_music_playlist`
 

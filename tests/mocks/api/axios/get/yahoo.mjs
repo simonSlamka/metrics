@@ -1,7 +1,7 @@
 /**Mocked data */
-export default function({ faker, url, options, login = faker.internet.userName() }) {
+export default function({faker, url, options, login = faker.internet.userName()}) {
   //Wakatime api
-  if (/^https:..apidojo-yahoo-finance-v1.p.rapidapi.com.stock.v2.*$/.test(url)) {
+  if (/^https:..yh-finance.p.rapidapi.com.stock.v2.*$/.test(url)) {
     //Get company profile
     if (/get-profile/.test(url)) {
       console.debug(`metrics/compute/mocks > mocking yahoo finance api result > ${url}`)
@@ -15,8 +15,8 @@ export default function({ faker, url, options, login = faker.internet.userName()
             symbol: "OCTO",
           },
           quoteType: {
-            shortName: faker.company.companyName(),
-            longName: faker.company.companyName(),
+            shortName: faker.company.name(),
+            longName: faker.company.name(),
             exchangeTimezoneName: faker.address.timeZone(),
             symbol: "OCTO",
           },

@@ -10,7 +10,7 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
   </tr>
 <% {
   let cell = 0
-  const elements = Object.entries(plugins).filter(([key, value]) => (value)&&(!["base", "core"].includes(key)&&(value.category !== "community")))
+  const elements = Object.entries(plugins).filter(([key, value]) => (value)&&(!["base", "core"].includes(key)&&(value.category !== "community")&&(!value.deprecation)))
 -%>
   <tr>
     <th colspan="2" align="center">
@@ -36,13 +36,30 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
 <% } %>    <%- readme.demo.replace(/<img src=/g, `<img alt="" width="400" src=`)?.split("\n")?.map((x, i) => i ? `  ${x}` : x)?.join("\n") %>
 <%      if (cell === "odd") {
 -%>  </tr>
-<% }}} -%>
+<% }}}} {
+  let cell = 0
+  const elements = Object.entries(plugins).filter(([key, value]) => (value.category === "community")&&(!value.deprecation))
+  if (elements.length%2)
+    elements.push(["", {readme:{demo:`<td align="center"><img width="900" height="1" alt=""></td>`}}])
+-%>
   <tr>
     <th colspan="2" align="center">
       <a href="/source/plugins/community/README.md">🎲 See also community plugins</a>
     </th>
   </tr>
-<% } %>
+<%
+  for (let i = 0; i < elements.length; i+=2) {
+    const cells = [["even", elements[i]], ["odd", elements[i+1]]]
+      for (const [cell, [plugin, {name, readme, authors}]] of cells) {
+        if (cell === "even") {
+-%>
+  <tr>
+<% } %>    <th><% if (plugin) { %><a href="source/plugins/community/<%= plugin %>/README.md"><%= name -%></a><br><sup>by <%- authors.map(author => `<a href="https://github.com/${author}">@${author}</a>`).join(" ") %></sup>
+<%- readme.demo.replace(/<td.*?>([\s\S]+?)<\/td>/, `  <details><summary>Render example</summary>$1</details>`).replace(/<img src=/g, `<img alt="" width="400" src=`)?.split("\n")?.map((x, i) => i ? `  ${x}` : x)?.join("\n") %><% } %>
+    </th>
+<%      if (cell === "odd") {
+-%>  </tr>
+<% }}}} %><%# -%>
 <% {
   let cell = 0
   const elements = Object.entries(templates).filter(([key, value]) => (value)&&(!["community"].includes(key)))
@@ -79,19 +96,24 @@ Generate metrics that can be embedded everywhere, including your GitHub profile 
     <th colspan="2"><h2>🦑 Try it now!</h2></th>
   </tr>
   <tr>
-    <th><a href="https://metrics.lecoq.io">📊 Metrics embed</a></th>
-    <th><a href="https://metrics.lecoq.io/about">✨ Metrics insights</a></th>
+    <th><a href="https://metrics.lecoq.io/embed">📊 Metrics embed</a></th>
+    <th><a href="https://metrics.lecoq.io/insights">✨ Metrics insights</a></th>
   </tr>
   <tr>
     <td align="center">
       Embed metrics images on your profile or blog!<br>
       Use <a href="https://github.com/marketplace/actions/metrics-embed">GitHub actions</a> for even more features!<br>
-      <img src="/.github/readme/imgs/features_embed.gif" width="441">
+      <img src="/.github/readme/imgs/features_embed.gif" width="360">
     </td>
     <td align="center">
       Share your metrics with friends and on social medias!<br>
       No configuration needed!<br>
-      <img src="/.github/readme/imgs/features_insights.gif" width="441">
+      <img src="/.github/readme/imgs/features_insights.gif" width="360">
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      Test latest features and patches on <code><a href="https://beta-metrics.lecoq.io">🧪 Metrics beta</a></code>!
     </td>
   </tr>
   <tr>

@@ -1,8 +1,12 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🙋 Introduction</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays account bio or organization/repository description.</p>
-<p>It is mostly intended for images that will be used outside of GitHub, since these informations are already displayed on GitHub.</p>
+<p>Since account bio is already displayed on account profile, this plugin is mostly intended for external usage.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://github.com">GitHub</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -12,7 +16,7 @@
     <td><code>👤 Users</code> <code>👥 Organizations</code> <code>📓 Repositories</code></td>
   </tr>
   <tr>
-    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>repo (optional)</code></td>
+    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>read:packages (optional)</code> <code>repo (optional)</code></td>
   </tr>
   <tr>
     <td colspan="2" align="center">
@@ -29,11 +33,11 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_introduction</code></h4></td>
-    <td rowspan="2"><p>Display account or repository introduction</p>
+    <td rowspan="2"><p>Enable introduction plugin</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -43,7 +47,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_introduction_title</code></h4></td>
-    <td rowspan="2"><p>Display introduction section title</p>
+    <td rowspan="2"><p>Section title</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>

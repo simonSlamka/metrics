@@ -1,4 +1,5 @@
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🎲 Community plugins</h3></th></tr>
   <tr><td colspan="2" align="center">Additional plugins maintained by community for even more features!</td></tr>
 <% {
@@ -8,9 +9,9 @@
     elements.push(["", {readme:{demo:`<td align="center"><img width="900" height="1" alt=""></td>`}}])
   for (let i = 0; i < elements.length; i+=2) {
     const cells = [["even", elements[i]], ["odd", elements[i+1]]]
-    for (const [cell, [plugin, {name, readme}]] of cells) {
+    for (const [cell, [plugin, {name, readme, authors}]] of cells) {
       if (cell === "even") { %>  <tr><% } %>
-    <th><% if (plugin) { %><a href="/source/plugins/community/<%= plugin %>/README.md"><%= name -%></a><% } %></th><%
+    <th><% if (plugin) { %><a href="/source/plugins/community/<%= plugin %>/README.md"><%= name -%></a><br><sup>by <%- authors.map(author => `<a href="https://github.com/${author}">@${author}</a>`).join(" ") %></sup><% } %></th><%
     if (cell === "odd") { %>
   </tr>
 <% }}
@@ -33,10 +34,10 @@ Be sure to read [contribution guide](/CONTRIBUTING.md) and [architecture](/ARCHI
 
 Please respect the following guidelines:
 
-- A plugin should be independant and should not rely on other plugins
+- A plugin should be independent and should not rely on other plugins
   - [🧱 core](/source/plugins/core/README.md) and [🗃️ base](/source/plugins/base/README.md) output can be reused though
 - A plugin should never edit its original arguments, as it is shared amongst other plugins and would create unattended side effects
-- Use `imports.metadata.plugins.{plugin-name}.inputs()` to automatically typecheck and default user inputs through defined `metadata.yml`
+- Use `imports.metadata.plugins.{plugin-name}.inputs()` to automatically type check and default user inputs through defined `metadata.yml`
 - Plugin options should respect the "lexical field" of existing option to keep consistency
 - Plugin errors should be handled gracefully by partials with error message
 - New dependencies should be avoided, consider using existing `imports`
@@ -209,7 +210,7 @@ export default async function(
   {
     login, //GitHub username
     q, //Raw user inputs (dot notation without plugin_ prefix, don't use it directly)
-    imports, //Various utilitaires (axios, puppeteer, fs, etc., see /source/app/metrics/utils.mjs)
+    imports, //Various utilities (axios, puppeteer, fs, etc., see /source/app/metrics/utils.mjs)
     data, //Raw data from core/base plugin
     computed, //Computed data from core/base plugin
     rest, //Rest authenticated GitHub octokit
@@ -219,12 +220,13 @@ export default async function(
   },
   //Settings and tokens
   {
-    enabled = false
+    enabled = false,
+    extras = false,
   } = {}) {
     //Plugin execution
     try {
       //Check if plugin is enabled and requirements are met
-      if ((!enabled)||(!q.my_plugin))
+      if ((!q.my_plugin)||(imports.metadata.plugins.my_plugin.enabled(enabled, {extras})))
         return null
 
       //Automatically validate user inputs
@@ -240,7 +242,7 @@ export default async function(
     }
     //Handle errors
     catch (error) {
-      throw {error:{message:"An error occured", instance:error}}
+      throw imports.format.error(error)
     }
 }
 ```

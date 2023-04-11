@@ -1,5 +1,5 @@
 /**Mocked data */
-export default function({ faker }, target, that, args) {
+export default async function({faker}, target, that, args) {
   //Arguments
   const [url] = args
   //Head request
@@ -52,6 +52,7 @@ export default function({ faker }, target, that, args) {
             patch: '@@ -0,0 +1,5 @@\n+//Imports\n+  import app from "./src/app.mjs"\n+\n+//Start app\n+  await app()\n\\ No newline at end of file',
           },
         ],
+        parents: [],
       },
     })
   }

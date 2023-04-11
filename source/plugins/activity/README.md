@@ -1,7 +1,11 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>📰 Recent activity</h3></th></tr>
-  <tr><td colspan="2" align="center"><p>This plugin displays your recent activity on GitHub.</p>
+  <tr><td colspan="2" align="center"><p>This plugin displays recent activity on GitHub.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://github.com">GitHub</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -11,7 +15,7 @@
     <td><code>👤 Users</code> <code>👥 Organizations</code> <code>📓 Repositories</code></td>
   </tr>
   <tr>
-    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>repo (optional)</code></td>
+    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>read:packages (optional)</code> <code>repo (optional)</code></td>
   </tr>
   <tr>
     <td colspan="2" align="center">
@@ -27,7 +31,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_activity</code></h4></td>
@@ -82,7 +86,7 @@
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_activity_visibility</code></h4></td>
     <td rowspan="2"><p>Events visibility</p>
-<p>Lets you hide private activity when using a <code>repo</code> scope token</p>
+<p>Can be used to toggle private activity visibility when using a token with <code>repo</code> scope</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -93,7 +97,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_activity_timestamps</code></h4></td>
-    <td rowspan="2"><p>Display events timestamps</p>
+    <td rowspan="2"><p>Events timestamps</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -109,13 +113,13 @@
   <tr>
     <td nowrap="nowrap">⏩ Inherits <code>repositories_skipped</code><br>
 <b>type:</b> <code>array</code>
-<i>(comma-separated)</i>
+<i>(newline-separated)</i>
 <br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_activity_ignored</code></h4></td>
     <td rowspan="2"><p>Ignored users</p>
-<p>Useful to ignore bots activity</p>
+<p>Can be used to ignore bots activity</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -137,7 +141,7 @@
 <li><code>release</code>: Publication of new releases</li>
 <li><code>review</code>: Review of pull requests</li>
 <li><code>comment</code>: Comments on commits, issues and pull requests</li>
-<li><code>wiki</code>: Edition of wiki pages</li>
+<li><code>wiki</code>: Changes of wiki pages</li>
 <li><code>fork</code>: Forking of repositories</li>
 <li><code>star</code>: Starring of repositories</li>
 <li><code>public</code>: Repositories made public</li>

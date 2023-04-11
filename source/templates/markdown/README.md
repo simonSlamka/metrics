@@ -1,5 +1,6 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#%EF%B8%8F-templates">← Back to templates index</a></td></tr>
   <tr><th colspan="2"><h3>📒 Markdown template</h3></th></tr>
   <tr><td colspan="2" align="center"><p>A template capable of rendering markdown from a given template file.</p>
 </td></tr>
@@ -31,7 +32,7 @@ Since the resulting output is a markdown file, it is possible to do additional f
 The templating engine is [EJS](https://github.com/mde/ejs) and can be used to interpolate any data retrieved by metrics.
 
 * `<%=` and `%>` are used to display escaped output
-  * `{{` and `}}` is also supported as syntaxic sugar
+  * `{{` and `}}` is also supported as syntactic sugar
 * `<%-` and `%>` are used to display raw output
 * `<%` and `%>` are used to execute JavaScript, and can also contains control statements such as conditionals and loops
 
@@ -129,7 +130,7 @@ The `embed()` function takes two arguments:
 
 > 💡 The `plugin_` prefix can be dropped for convenience
 
-> 💡 The `embed()` function does not have `🗃️ base` plugin enabled by default. To use it, it is required to explicitely pass them through `base` option.
+> 💡 The `embed()` function does not have `🗃️ base` plugin enabled by default. To use it, it is required to explicitly pass them through `base` option.
 
 ## ℹ️ Examples workflows
 

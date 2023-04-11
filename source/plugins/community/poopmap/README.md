@@ -1,7 +1,11 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💩 PoopMap plugin</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays statistics from a <a href="https://poopmap.net">PoopMap</a> account.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://poopmap.net">PoopMap</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
 <tr><th>Authors</th><td><a href="https://github.com/matievisthekat">@matievisthekat</a></td></tr>
   <tr>
@@ -28,7 +32,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_poopmap</code></h4></td>
@@ -88,7 +92,7 @@ Tap "Copy to Clipboard"
 
 It should result in something like `Haha, check out the places I've pooped on Poop Map https://api.poopmap.net/map?token=xxxxxxxxxx` copied.
 
-Extract the `token` query paramater from the link and use it in `plugin_poopmap_token`.
+Extract the `token` query parameter from the link and use it in `plugin_poopmap_token`.
 This token will not expire and it will be able to access only public details.
 
 ## ℹ️ Examples workflows
