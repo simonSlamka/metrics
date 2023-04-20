@@ -1,7 +1,11 @@
 <!--header-->
 <table>
-  <tr><th colspan="2"><h3>🈷️ Most used languages</h3></th></tr>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
+  <tr><th colspan="2"><h3>🈷️ Languages activity</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin can display which languages you use across all repositories you contributed to.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://github.com">GitHub</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -11,7 +15,7 @@
     <td><code>👤 Users</code> <code>👥 Organizations</code> <code>📓 Repositories</code></td>
   </tr>
   <tr>
-    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>repo (optional)</code></td>
+    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>read:packages (optional)</code> <code>repo (optional)</code></td>
   </tr>
   <tr>
     <td colspan="2" align="center">
@@ -30,7 +34,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages</code></h4></td>
@@ -60,7 +64,7 @@
   <tr>
     <td nowrap="nowrap">⏩ Inherits <code>repositories_skipped</code><br>
 <b>type:</b> <code>array</code>
-<i>(comma-separated)</i>
+<i>(newline-separated)</i>
 <br></td>
   </tr>
   <tr>
@@ -89,14 +93,13 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_other</code></h4></td>
-    <td rowspan="2"><p>Group unknown, ignored and over-limit languages into a single &quot;Other&quot; category</p>
-<p>If this option is enabled, &quot;Other&quot; category will not be subject to <code>plugin_languages_threshold</code>.
+    <td rowspan="2"><p>Group unknown, ignored and over-limit languages into &quot;Other&quot; category</p>
+<p>If this option is enabled, &quot;Other&quot; category will not be subject to <a href="/source/plugins/languages/README.md#plugin_languages_threshold"><code>plugin_languages_threshold</code></a>.
 It will be automatically hidden if empty.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">✨ On <code>master</code>/<code>main</code><br>
-<b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -123,11 +126,11 @@ It will be automatically hidden if empty.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_sections</code></h4></td>
     <td rowspan="2"><p>Displayed sections</p>
+<p>Note that <code>recently-used</code> is only available when <a href="/source/plugins/languages/README.md#plugin_languages_indepth"><code>plugin_languages_indepth</code></a> is enabled</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>array</code>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br>
 <b>default:</b> most-used<br>
@@ -136,26 +139,58 @@ It will be automatically hidden if empty.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_details</code></h4></td>
     <td rowspan="2"><p>Additional details</p>
-<p>Note that <code>lines</code> is only available when <code>plugin_languages_indepth</code> is enabled</p>
+<p>Note that <code>lines</code> is only available when <a href="/source/plugins/languages/README.md#plugin_languages_indepth"><code>plugin_languages_indepth</code></a> is enabled</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>array</code>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br>
 <b>allowed values:</b><ul><li>bytes-size</li><li>percentage</li><li>lines</li></ul></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_indepth</code></h4></td>
-    <td rowspan="2"><p>Indepth mode (⚠️ read documentation first)</p>
+    <td rowspan="2"><p>Indepth mode</p>
+<blockquote>
+<p>⚠️ read documentation first</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.cpu.overuse</i></li>
+<li><i>metrics.run.tempdir</i></li>
+<li><i>metrics.run.git</i></li>
+</ul>
 <b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> false<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>plugin_languages_indepth_custom</code></h4></td>
+    <td rowspan="2"><p>Indepth mode - Custom repositories</p>
+<p>Specify a list of additional repositories to analyze.</p>
+<p>Below are the supported syntax formats:</p>
+<ul>
+<li><code>owner/repo</code> (e.g. <code>lowlighter/metrics</code>)</li>
+<li><code>owner/repo@branch</code> (e.g. <code>lowlighter/metrics@main</code>)</li>
+<li><code>owner/repo@branch:commits</code> (e.g. <code>lowlighter/metrics@main:v1.0..v1.1</code>)<ul>
+<li>See <a href="https://git-scm.com/docs/git-rev-list#_description"><code>git rev-list</code></a> documentation for more information about <code>commits</code> syntax</li>
+</ul>
+</li>
+</ul>
+<p>It is possible to specify repositories that are not hosted on <a href="https://github.com">github.com</a> by passing a full url instead.
+In this case the repository must be accessible directly.</p>
+<blockquote>
+<p>ℹ️ This option bypass <a href="/source/plugins/languages/README.md#plugin_languages_skipped"><code>plugin_languages_skipped</code></a></p>
+</blockquote>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
+<i>(comma-separated)</i>
+<br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_analysis_timeout</code></h4></td>
@@ -163,13 +198,26 @@ It will be automatically hidden if empty.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>number</code>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
 <i>(1 ≤
 𝑥
-≤ 30)</i>
+≤ 60)</i>
 <br>
 <b>default:</b> 15<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>plugin_languages_analysis_timeout_repositories</code></h4></td>
+    <td rowspan="2"><p>Indepth mode - Analysis timeout (repositories)</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
+<i>(0 ≤
+𝑥
+≤ 15)</i>
+<br>
+<b>zero behaviour:</b> disable</br>
+<b>default:</b> 7.5<br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_categories</code></h4></td>
@@ -177,8 +225,7 @@ It will be automatically hidden if empty.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>array</code>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br>
 <b>default:</b> markup, programming<br>
@@ -190,8 +237,7 @@ It will be automatically hidden if empty.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>array</code>
+    <td nowrap="nowrap"><b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br>
 <b>default:</b> markup, programming<br>
@@ -199,12 +245,11 @@ It will be automatically hidden if empty.</p>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_recent_load</code></h4></td>
-    <td rowspan="2"><p>Events to load (recently-used section)</p>
+    <td rowspan="2"><p>Indepth mode - Events to load (recently-used section)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>number</code>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
 <i>(100 ≤
 𝑥
 ≤ 1000)</i>
@@ -213,12 +258,11 @@ It will be automatically hidden if empty.</p>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_languages_recent_days</code></h4></td>
-    <td rowspan="2"><p>Events maximum age (day, recently-used section)</p>
+    <td rowspan="2"><p>Indepth mode - Events maximum age (day, recently-used section)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
-<b>type:</b> <code>number</code>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
 <i>(0 ≤
 𝑥
 ≤ 365)</i>
@@ -231,10 +275,9 @@ It will be automatically hidden if empty.</p>
 
 ## 🔎 `indepth` mode
 
-The default algorithm use the top languages provided of each repository you contributed to.
-When working in collaborative projects with a lot of people, these numbers may be less representative of your actual work.
+The default algorithm uses the top languages from each repository you contributed to using GitHub GraphQL API (which is similar to the displayed languages bar on github.com). When working in collaborative projects with a lot of people, these numbers may be less representative of your actual work.
 
-The `plugin_languages_indepth` option lets you use a more advanced algorithm for more accurates statistics.
+The `plugin_languages_indepth` option lets you use a more advanced algorithm for more accurate statistics.
 Under the hood, it will clone your repositories, run [linguist-js](https://github.com/Nixinova/Linguist) (a JavaScript port of [GitHub linguist](https://github.com/github/linguist)) and iterate over patches matching your `commits_authoring` setting.
 
 Since git lets you use any email and username for commits, *metrics* may not be able to detect a commit ownership if it isn't the same as your GitHub personal data. By default, it will use your GitHub username, but you can configure additional matching usernames and email addresses using `commits_authoring` option.
@@ -252,11 +295,51 @@ Since git lets you use any email and username for commits, *metrics* may not be 
 
 > ⚠️ This feature significantly increase workflow time
 
-> ⚠️ Since this mode iterates over **each commit of each repository**, it is not suited for large code base, especially those with a large amount of commits and the ones containing binaries. While `plugin_languages_analysis_timeout` can be used to increase the default timeout for analysis, please be responsible and keep this feature disabled if it cannot work on your account to save GitHub resources and our planet 🌏
+> ⚠️ Since this mode iterates over **each matching commit of each repository**, it is not suited for large code base, especially those with a large amount of commits and the ones containing binaries. While `plugin_languages_analysis_timeout` and `plugin_languages_analysis_timeout_repositories` can be used to increase the default timeout for analysis, please be responsible and keep this feature disabled if it cannot work on your account to save GitHub resources and our planet 🌏
 
 > ⚠️ Although *metrics* does not send any code to external sources, repositories are temporarily cloned on the GitHub Action runner. It is advised to keep this option disabled when working with sensitive data or company code. Use at your own risk, *metrics* and its authors **cannot** be held responsible for any resulting code leaks. Source code is available for auditing at [analyzers.mjs](/source/plugins/languages/analyzers.mjs).
 
 > 🌐 Web instances must enable this feature in `settings.json`
+
+Below is a summary of the process used to compute indepth statistics:
+
+## Most used mode
+
+1. Fetch GPG keys linked to your GitHub account
+  - automatically add attached emails to `commits_authoring`
+  - *web-flow* (GitHub's public key for changes made through web-ui) is also fetched
+2. Import GPG keys so they can be used to verify commits later
+3. Iterate through repositories
+  - early break if `plugin_languages_analysis_timeout` is reached
+  - skip repository if it matches `plugin_languages_skipped`
+  - include repositories from `plugin_languages_indepth_custom`
+    - a specific branch and commit range can be used
+    - a source other than github.com can be used
+4. Clone repository
+  - target branch is checkout
+5. List of authored commits is computed
+  - using `git log --author` and `commits_authoring` to search in commit headers
+  - using `git log --grep` and `commits_authoring` to search in commit body
+  - ensure these are within the range specified by `plugin_languages_indepth_custom` (if applicable)
+6. Process authored commits
+  - early break if `plugin_languages_analysis_timeout_repositories` is reached
+  - using `git verify-commit` to check authenticity against imported GPG keys
+  - using `git log --patch` to extract added/deleted lines/bytes from each file
+  - using [GitHub linguist](https://github.com/github/linguist) ([linguist-js](https://github.com/Nixinova/LinguistJS)) to detect language for each file
+    - respect `plugin_languages_categories` option
+    - if a file has since been deleted or moved, checkout on the last commit file was present and run linguist again
+7. Aggregate results
+
+## Recently used mode
+
+1. Fetch push events linked to your account (or target repository)
+  - matching `plugin_languages_recent_load` and `plugin_languages_recent_days` options
+  - matching committer emails from `commits_authoring`
+2. Process authored commits
+  - using [GitHub linguist](https://github.com/github/linguist) ([linguist-js](https://github.com/Nixinova/LinguistJS)) to detect language for each file
+    - respect `plugin_languages_recent_categories` option
+    - directly pass file content rather than performing I/O and simulating a git repository
+3. Aggregate results
 
 ## 📅 Recently used languages
 
@@ -321,7 +404,7 @@ It is possible to use custom colors using `plugin_languages_colors` option.
 The following syntaxes are supported:
 - A predefined set from [colorsets.json](colorsets.json) *(support limited to 8 languages max)*
 - `${language}:${color}` to change the color of a language *(case insensitive)*
-- `${n}:${color}` to change the color of the the n-th language
+- `${n}:${color}` to change the color of the n-th language
 
 Both hexadecimal and [named color](https://developer.mozilla.org/en-US/docs/Web/CSS/color_value) are supported.
 

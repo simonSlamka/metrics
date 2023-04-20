@@ -1,7 +1,11 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🏆 Achievements</h3></th></tr>
-  <tr><td colspan="2" align="center"><p>This plugin displays several highlights about what you achieved on GitHub.</p>
+  <tr><td colspan="2" align="center"><p>This plugin displays several highlights about what an account has achieved on GitHub.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="https://github.com">GitHub</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
   <tr>
     <th rowspan="3">Supported features<br><sub><a href="metadata.yml">→ Full specification</a></sub></th>
@@ -11,7 +15,7 @@
     <td><code>👤 Users</code> <code>👥 Organizations</code></td>
   </tr>
   <tr>
-    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>repo (optional)</code></td>
+    <td><code>🔑 (scopeless)</code> <code>read:org (optional)</code> <code>read:user (optional)</code> <code>read:packages (optional)</code> <code>repo (optional)</code></td>
   </tr>
   <tr>
     <td colspan="2" align="center">
@@ -28,7 +32,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_achievements</code></h4></td>
@@ -36,13 +40,17 @@
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.run.puppeteer.scrapping</i></li>
+</ul>
+<b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_achievements_threshold</code></h4></td>
-    <td rowspan="2"><p>Display rank threshold</p>
+    <td rowspan="2"><p>Rank threshold filter</p>
 <p>Use <code>X</code> to display achievements not yet unlocked</p>
 <img width="900" height="1" alt=""></td>
   </tr>
@@ -54,7 +62,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_achievements_secrets</code></h4></td>
-    <td rowspan="2"><p>Display secrets achievements</p>
+    <td rowspan="2"><p>Secrets achievements</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -87,12 +95,13 @@
 <i>(0 ≤
 𝑥)</i>
 <br>
+<b>zero behaviour:</b> disable</br>
 <b>default:</b> 0<br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_achievements_ignored</code></h4></td>
-    <td rowspan="2"><p>Hide specified achievements</p>
-<p>Use names without the rank adjective (i.e. without &quot;great&quot;, &quot;super&quot; or &quot;master&quot;)</p>
+    <td rowspan="2"><p>Ignored achievements</p>
+<p>Use achievements names without their rank adjective (i.e. without &quot;great&quot;, &quot;super&quot; or &quot;master&quot;)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -102,9 +111,9 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_achievements_only</code></h4></td>
-    <td rowspan="2"><p>Restrict display to specified achievements</p>
-<p>Use names without the rank adjective (i.e. without &quot;great&quot;, &quot;super&quot; or &quot;master&quot;)</p>
-<p>This option is equivalent to <code>plugin_achievements_ignored</code> with all existing achievements but the ones listed in this option</p>
+    <td rowspan="2"><p>Showcased achievements</p>
+<p>Use achievements names without their rank adjective (i.e. without &quot;great&quot;, &quot;super&quot; or &quot;master&quot;)</p>
+<p>This option is equivalent to <a href="/source/plugins/achievements/README.md#plugin_achievements_ignored"><code>plugin_achievements_ignored</code></a> with all existing achievements except the ones listed in this option</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>

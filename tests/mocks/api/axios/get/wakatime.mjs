@@ -1,5 +1,5 @@
 /**Mocked data */
-export default function({ faker, url, options, login = faker.internet.userName() }) {
+export default function({faker, url, options, login = faker.internet.userName()}) {
   //Wakatime api
   if (/^https:..wakatime.com.api.v1.users..*.stats.*$/.test(url)) {
     //Get user profile
@@ -13,14 +13,14 @@ export default function({ faker, url, options, login = faker.internet.userName()
           },
           hours: faker.datatype.number(1000),
           minutes: faker.datatype.number(1000),
-          name: array ? faker.random.arrayElement(array) : faker.random.words(2).replace(/ /g, "-").toLocaleLowerCase(),
+          name: array ? faker.helpers.arrayElement(array) : faker.random.words(2).replace(/ /g, "-").toLocaleLowerCase(),
           percent: 0,
           total_seconds: faker.datatype.number(1000000),
         }))
-        results = results.filter(({ name }) => elements.includes(name) ? false : (elements.push(name), true))
+        results = results.filter(({name}) => elements.includes(name) ? false : (elements.push(name), true))
         let percents = 100
         for (const result of results) {
-          result.percent = 1 + faker.datatype.number(percents - 1)
+          result.percent = 1 + ((percents - 1) <= 0 ? 0 : faker.datatype.number(percents - 1))
           percents -= result.percent
         }
         return results

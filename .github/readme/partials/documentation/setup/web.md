@@ -34,7 +34,7 @@ Edit `settings.json` to configure your instance.
 }
 ```
 
-### 2️.1️  Restricting access to your web instance
+### 2️.1️ Restricting access to your web instance
 
 If you intend to make your web instance public, it is advised to restrict access using an access list or rate-limiting it.
 
@@ -72,10 +72,6 @@ Configuration file also contains settings about enabled templates, plugins and f
     "by": "me",
     "link": "https://user.me",
   },
-  "extras": {
-    "css": true,
-    "features": false
-  },
   "plugins": {
     "isocalendar":{
       "enabled": false
@@ -84,7 +80,47 @@ Configuration file also contains settings about enabled templates, plugins and f
 }
 ```
 
-> ⚠️ Extras features **should not** be enabled on a public server, most of these are compute-intensive and some of some even allow remote code execution! Use with caution
+### 2️.3️ Extra features configuration
+
+Extra features are a way to enable and control advanced functionality in plugins, which are usually either CPU or API intensive, require access to filesystem or binaries, and sometimes also allow remote code execution.
+
+> ⚠️ Please understand that some extras features may compromise container integrity or security.
+> Never use them if outside a containerized or development environment!
+>
+> Use at your own risk, *metrics* and its authors cannot be held responsible for any damage caused.
+
+*Example: extra features server configuration*
+```javascript
+{
+  "extras": {
+    "features": [
+      "metrics.setup.community.templates",
+      "metrics.api.github.overuse",
+      "metrics.cpu.overuse",
+      "metrics.run.puppeteer.scrapping",
+    ]
+  }
+}
+```
+
+The following extra features are supported:
+| Extra feature identifier            | Description                                               |
+| ----------------------------------- | --------------------------------------------------------- |
+| `metrics.setup.community.templates` | Allow community templates download                        |
+| `metrics.setup.community.presets`   | Allow community presets usage                             |
+| `metrics.api.github.overuse`        | Allow GitHub API intensive requests                       |
+| `metrics.api.*`                     | Allow use of external API requests                        |
+| `metrics.cpu.overuse`               | Allow CPU intensive requests                              |
+| `metrics.run.tempdir`               | Allow access to temporary directory (including I/O)       |
+| `metrics.run.git`                   | Allow to run git                                          |
+| `metrics.run.licensed`              | Allow to run licensed                                     |
+| ⚠️ `metrics.run.user.cmd`           | Allow to run ANY command by user (USE WITH CAUTION! May result in token leaks by malicious users)                                                                |
+| `metrics.run.puppeteer.scrapping`   | Allow to run puppeteer to scrape data                     |
+| `metrics.run.puppeteer.user.css`    | Allow to run CSS by user during puppeteer render          |
+| `metrics.run.puppeteer.user.js`     | Allow to run JavaScript by user during puppeteer render   |
+| ⚠️ `metrics.npm.optional.*`        | Allow use of specified dependency (CONSULT RESPECTIVE DEPENDENCY CVE FIRST) |
+
+If a plugin is used without sufficient permissions, it will result in an error.
 
 ## 3️ Start docker container
 
@@ -104,7 +140,7 @@ PUBLISHED_PORT=80
 
 And start the container using the following command:
 ```shell
-docker run --entrypoint="" -p=127.0.0.1:$PUBLISHED_PORT:$SERVICE_PORT --volume=$SETTINGS:/metrics/settings.json ghcr.io/lowlighter/metrics:$VERSION npm start
+docker run --rm --entrypoint="" -p=127.0.0.1:$PUBLISHED_PORT:$SERVICE_PORT --volume=$SETTINGS:/metrics/settings.json ghcr.io/lowlighter/metrics:$VERSION npm start
 ```
 
 ## 4️ Add images to your profile `README.md`
@@ -118,7 +154,7 @@ Update profile `README.md` to include rendered image.
 
 ### 4️.1️ URL parameters syntax
 
-The GitHub action and the web instance uses the same engine behing the hood.
+The GitHub action and the web instance uses the same engine behind the hood.
 
 It is actually possible to generate image directly from url without passing by the web ui by knowing how to pass parameters.
 

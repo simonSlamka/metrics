@@ -1,7 +1,11 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💉 Nightscout</h3></th></tr>
-  <tr><td colspan="2" align="center"><p>This plugin lets you display blood sugar values from a <a href="http://nightscout.info">Nightscout</a> site.</p>
+  <tr><td colspan="2" align="center"><p>This plugin displays blood sugar values from a <a href="http://nightscout.info">Nightscout</a> site.</p>
+</td></tr>
+  <tr><th>⚠️ Disclaimer</th><td><p>This plugin is not affiliated, associated, authorized, endorsed by, or in any way officially connected with <a href="http://nightscout.info">Nightscout</a>.
+All product and company names are trademarks™ or registered® trademarks of their respective holders.</p>
 </td></tr>
 <tr><th>Authors</th><td><a href="https://github.com/legoandmars">@legoandmars</a></td></tr>
   <tr>
@@ -28,7 +32,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_nightscout</code></h4></td>

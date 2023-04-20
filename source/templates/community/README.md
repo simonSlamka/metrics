@@ -1,15 +1,11 @@
 <table>
   <tr><th colspan="2"><h3>📕 Community templates</h3></th></tr>
-  <tr><td colspan="2" align="center">A template capable of rendering markdown from a given template file.</td></tr>
-  <tr>
-    <td  colspan="2" align="center">
-      <img src="https://github.com/lowlighter/metrics/blob/examples/metrics.markdown.png" alt=""></img>
-      <img width="900" height="1" alt="">
-    </td>
-  </tr>
-</table>
+  <tr><td colspan="2" align="center">
 
-Community templates are a way to use official releases of [lowlighter/metrics](https://github.com/lowlighter/metrics) while using templates from external repositories (owned or not).
+  Community templates are a way to use official releases of [lowlighter/metrics](https://github.com/lowlighter/metrics) while using templates from external repositories (owned or not).
+
+  </td></tr>
+</table>
 
 ## 📮 Using community templates
 
@@ -159,9 +155,10 @@ It is used to compute height dynamically through a [puppeteer](https://github.co
 
 The default file looks like below:
 ```yaml
-name: "🖼️ Template name"
+name: 🖼️ Template name
 extends: classic
-description: Short description
+description: |
+  Short description
 examples:
   default: https://via.placeholder.com/468x60?text=No%20preview%20available
 supports:

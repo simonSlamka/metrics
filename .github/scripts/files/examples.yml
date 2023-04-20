@@ -10,7 +10,19 @@ on:
         required: true
       METRICS_TOKEN_WITH_SCOPES:
         required: true
+      METRICS_TOKEN_PERSONAL:
+        required: true
+      CHESS_TOKEN:
+        required: true
       PAGESPEED_TOKEN:
+        required: true
+      GOOGLE_MAP_TOKEN:
+        required: true
+      SPLATOON_TOKEN:
+        required: true
+      SPLATOON_STATINK_TOKEN:
+        required: true
+      SIXTEEN_PERSONALITIES_URL:
         required: true
       SPOTIFY_TOKENS:
         required: true
@@ -31,7 +43,7 @@ jobs:
     if: "github.repository == 'lowlighter/metrics'"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Checkout examples
@@ -42,13 +54,13 @@ jobs:
       - name: Screenshot markdown example
         if: ${{ success() || failure() }}
         run: |
-          docker run --entrypoint="" --volume=/tmp:/tmp ghcr.io/lowlighter/metrics:master node /metrics/.github/scripts/markdown_example.mjs
+          docker run --rm --entrypoint="" --volume=/tmp:/tmp ghcr.io/lowlighter/metrics:master node /metrics/.github/scripts/markdown_example.mjs
           sudo mv /tmp/metrics.markdown.png /metrics_renders/
       - name: Publish examples
         if: ${{ success() || failure() }}
         run: |
           set +e
-          rm -rf /metrics_renders/metrics.markdown*.{md,pdf}
+          sudo rm -rf /metrics_renders/github-metrics.*
           sudo mv /metrics_renders/* ./
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -64,10 +76,11 @@ jobs:
 
   repository:
     runs-on: ubuntu-latest
+    needs: [ examples ]
     if: "github.repository == 'lowlighter/metrics'"
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Checkout examples
@@ -94,16 +107,15 @@ jobs:
         uses: lowlighter/metrics@master
         with:
           filename: metrics.sponsors.svg
-          token: ${{ secrets.METRICS_TOKEN_WITH_SCOPES }}
+          token: ${{ secrets.METRICS_TOKEN_PERSONAL }}
           base: ""
           user: lowlighter
           plugin_sponsors: yes
           plugin_sponsors_past: yes
-          plugin_sponsors_sections: goal
+          plugin_sponsors_sections: list
+          plugin_sponsors_size: 32
           plugins_errors_fatal: yes
           config_display: large
-          extras_js: |
-            document.querySelectorAll(".markdown, .center, .goal-text span:last-child")?.forEach(h2 => h2.remove())
           output_action: none
           delay: 120
       - name: Licenses
@@ -128,10 +140,10 @@ jobs:
         if: ${{ success() || failure() }}
         run: |
           set +e
-          sudo mv /metrics_renders/* ./
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git pull
+          sudo cp /metrics_renders/* ./
           git add --all
           git commit -m "chore: update examples"
           git push --force

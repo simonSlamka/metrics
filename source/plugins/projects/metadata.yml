@@ -1,9 +1,10 @@
-name: "🗂️ Active projects"
+name: 🗂️ GitHub projects
 category: github
-description: This plugin displays progress of your profile and repository projects.
+description: |
+  This plugin displays progress of profile and repository projects.
 examples:
   default: https://github.com/lowlighter/metrics/blob/examples/metrics.plugin.projects.svg
-index: 11
+index: 25
 supports:
   - user
   - organization
@@ -11,10 +12,12 @@ supports:
 scopes:
   - public_access
   - public_repo
+  - read:project
 inputs:
 
   plugin_projects:
-    description: Enable projects plugin
+    description: |
+      Enable projects plugin
     type: boolean
     default: no
 
@@ -22,7 +25,7 @@ inputs:
     description: |
       Display limit
 
-      Note that `plugin_projects_repositories` is not affected by this option
+      Projects defined by [`plugin_projects_repositories`](/source/plugins/projects/README.md#plugin_projects_repositories) are not affected by this option
     type: number
     default: 4
     min: 0
@@ -30,9 +33,11 @@ inputs:
 
   plugin_projects_repositories:
     description: |
-      List of repositories projects
+      Featured repositories projects
 
       Use the following syntax for each project `:user/:repo/projects/:project_id`
+
+      > ℹ️ [GitHub projects (beta)](https://docs.github.com/en/issues/trying-out-the-new-projects-experience/about-projects) needs to use the same syntax as above and repository must specified repository must be linked to given project.
     type: array
     example: username/repo/projects/1, username/repo/projects/2, ...
     format: comma-separated
@@ -40,6 +45,7 @@ inputs:
     preset: no
 
   plugin_projects_descriptions:
-    description: Toggle projects descriptions display
+    description: |
+      Projects descriptions
     type: boolean
     default: no

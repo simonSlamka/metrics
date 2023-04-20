@@ -1,9 +1,9 @@
 //Setup
-export default async function({login, data, graphql, q, imports, queries, account}, {enabled = false} = {}) {
+export default async function({login, data, graphql, q, imports, queries, account}, {enabled = false, extras = false} = {}) {
   //Plugin execution
   try {
     //Check if plugin is enabled and requirements are met
-    if ((!enabled) || (!q.isocalendar))
+    if ((!q.isocalendar) || (!imports.metadata.plugins.isocalendar.enabled(enabled, {extras})))
       return null
 
     //Load inputs
@@ -27,8 +27,8 @@ export default async function({login, data, graphql, q, imports, queries, accoun
 
     //Compute contribution calendar, highest contributions in a day, streaks and average commits per day
     console.debug(`metrics/compute/${login}/plugins > isocalendar > computing stats`)
-    const calendar = {weeks:[]}
-    const {streak, max, average} = await statistics({login, graphql, queries, start, end:now, calendar})
+    const calendar = {weeks: []}
+    const {streak, max, average} = await statistics({login, graphql, queries, start, end: now, calendar})
     const reference = Math.max(...calendar.weeks.flatMap(({contributionDays}) => contributionDays.map(({contributionCount}) => contributionCount)))
 
     //Compute SVG
@@ -43,8 +43,7 @@ export default async function({login, data, graphql, q, imports, queries, accoun
                   <feComponentTransfer>
                     ${[..."RGB"].map(channel => `<feFunc${channel} type="linear" slope="${1 - k * 0.4}" />`).join("")}
                   </feComponentTransfer>
-                </filter>`
-      )
+                </filter>`)
         .join("")
     }
               <g transform="scale(4) translate(12, 0)">`
@@ -73,15 +72,13 @@ export default async function({login, data, graphql, q, imports, queries, accoun
   }
   //Handle errors
   catch (error) {
-    if (error.error?.message)
-      throw error
-    throw {error:{message:"An error occured", instance:error}}
+    throw imports.format.error(error)
   }
 }
 
 /**Compute max and current streaks */
 async function statistics({login, graphql, queries, start, end, calendar}) {
-  let average = 0, max = 0, streak = {max:0, current:0}, values = []
+  let average = 0, max = 0, streak = {max: 0, current: 0}, values = []
   //Load contribution calendar
   for (let from = new Date(start); from < end;) {
     //Set date range
@@ -97,7 +94,7 @@ async function statistics({login, graphql, queries, start, end, calendar}) {
     dto.setUTCMilliseconds(999)
     //Fetch data from api
     console.debug(`metrics/compute/${login}/plugins > isocalendar > loading calendar from "${from.toISOString()}" to "${dto.toISOString()}"`)
-    const {user:{calendar:{contributionCalendar:{weeks}}}} = await graphql(queries.isocalendar.calendar({login, from:from.toISOString(), to:dto.toISOString()}))
+    const {user: {calendar: {contributionCalendar: {weeks}}}} = await graphql(queries.isocalendar.calendar({login, from: from.toISOString(), to: dto.toISOString()}))
     calendar.weeks.push(...weeks)
     //Set next date range start
     from = new Date(to)

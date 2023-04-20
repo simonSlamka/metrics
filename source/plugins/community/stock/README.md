@@ -1,5 +1,6 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>💹 Stock prices</h3></th></tr>
   <tr><td colspan="2" align="center"><p>This plugin displays the stock market price of a given company.</p>
 </td></tr>
@@ -28,7 +29,7 @@
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_stock</code></h4></td>
@@ -36,7 +37,12 @@
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.npm.optional.d3</i></li>
+<li><i>metrics.api.yahoo.finance</i></li>
+</ul>
+<b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
   </tr>
@@ -61,7 +67,7 @@
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>plugin_stock_duration</code></h4></td>
-    <td rowspan="2"><p>Time range (relative to current date)</p>
+    <td rowspan="2"><p>Time range</p>
 <ul>
 <li><code>1d</code>: Today</li>
 <li><code>5d</code>: 5 days</li>
@@ -75,6 +81,7 @@
 <li><code>ytd</code>: Year to date</li>
 <li><code>max</code>: All time</li>
 </ul>
+<p>This is relative to current date</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>

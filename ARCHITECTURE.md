@@ -62,7 +62,7 @@ To solve this, metrics now spawns a [puppeteer](https://github.com/puppeteer/pup
 
 ![Metrics marker](/.github/readme/imgs/about_metrics_marker.png)
 
-Additional bonus of using pupeeter is that it can take screenshots, making it easy to convert SVGs to PNG output.
+Additional bonus of using puppeteer is that it can take screenshots, making it easy to convert SVGs to PNG output.
 
 ### 💬 Gathering external data from GitHub APIs and Third-Party services
 
@@ -70,7 +70,7 @@ Additional bonus of using pupeeter is that it can take screenshots, making it ea
 
 As for other external services (Twitter, Spotify, PageSpeed, ...), metrics use their respective APIs, usually making https requests through [axios](https://github.com/axios/axios) and by following their documentation. It would be overkill to install entire SDKs for these since plugins rarely uses more than 2/3 calls.
 
-In last resort, pupeeter is seldom used to scrap websites, though its use tends to make things slow and unstable (as it'll break upon HTML structural changes).
+In last resort, puppeteer is seldom used to scrap websites, though its use tends to make things slow and unstable (as it'll break upon HTML structural changes).
 
 ### 💬 Web instance and GitHub action similarities
 
@@ -95,7 +95,7 @@ Below is a list of used packages.
   * To render SVG images
 * [ptarjan/node-cache](https://github.com/ptarjan/node-cache)
   * To cache generated content
-* [oliver-moran/jimp](https://github.com/oliver-moran/jimp), [foliojs/png.js](https://github.com/foliojs/png.js) and [eugeneware/gifencoder](https://github.com/eugeneware/gifencoder)
+* [lovell/sharp](https://github.com/lovell/sharp), [foliojs/png.js](https://github.com/foliojs/png.js) and [eugeneware/gifencoder](https://github.com/eugeneware/gifencoder)
   * To process images transformations
 * [svg/svgo](https://github.com/svg/svgo)
   * To optimize generated SVG
@@ -119,8 +119,6 @@ Below is a list of used packages.
   * To parse and handle emojis/[twemojis](https://github.com/twitter/twemoji)
 * [jshemas/openGraphScraper](https://github.com/jshemas/openGraphScraper)
   * To retrieve open graphs metadata
-* [panosoft/node-chartist](https://github.com/panosoft/node-chartist) and [gionkunz/chartist-js](https://github.com/gionkunz/chartist-js)
-  * To display embed SVG charts
 * [rbren/rss-parser](https://github.com/rbren/rss-parser)
   * To parse RSS streams
 * [Nixinova/Linguist](https://github.com/Nixinova/Linguist)

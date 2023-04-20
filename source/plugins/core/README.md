@@ -1,5 +1,6 @@
 <!--header-->
 <table>
+  <tr><td colspan="2"><a href="/README.md#-plugins">← Back to plugins index</a></td></tr>
   <tr><th colspan="2"><h3>🧱 Core</h3></th></tr>
   <tr><td colspan="2" align="center"><p>Global configuration and options</p>
 </td></tr>
@@ -54,7 +55,61 @@ Content can be manually ordered using `config_order` option.
 > 💡 Omitted sections will be appended at the end using default order
 
 > ℹ️ The handles to use for each plugin and sections is based on the [`partials/_.json`](/source/templates/classic/partials/_.json) of the template.
-> It may not necessarly be the plugin id (e.g. `base.header`, `base.activity+community`, `base.repositories`, etc.).
+> It may not necessarily be the plugin id (e.g. `base.header`, `base.activity+community`, `base.repositories`, etc.).
+
+## 🔕 Skipping repositories in plugins
+
+Some plugins support a `plugin_*_skipped` option which is used to skipped repositories from result. It inherits the global option [`repositories_skipped`](/source/plugins/base/README.md#repositories_skipped) which makes it easier to ignore repositories from all plugins at once.
+
+These options support two different syntaxes:
+
+### Basic pattern matching
+
+Skip repositories by:
+- using their full handle (e.g. `user/repo`)
+- using only their name (e.g. `repo`)
+  - *in this case, the owner may be implicitly set to current `user` option*
+
+*Example: skipping repositories with basic pattern matching*
+```yml
+repositories_skipped: my-repo, user/my-repo
+```
+
+> 💡 Either comma or newlines can be used to separate basic patterns
+
+### Advanced pattern matching
+
+To enable advanced pattern matching to skip repositories, include `@use.patterns` at the beginning of the option value.
+
+Skip repositories by writing file-glob patterns, with any of the supported operation:
+- `#` to write comments
+- `-` to exclude repositories
+  - *the `-` is implicit and may be omitted from excluding patterns*
+- `+` to include back repositories
+
+> ℹ️ *metrics* use [isaacs/minimatch](https://github.com/isaacs/minimatch) as its file-glob matcher
+
+*Example: skipping repositories with basic advanced matching*
+```yml
+repositories_skipped: |
+  @use.patterns
+
+  # Skip a specific repository (both patterns are equivalent)
+  user/repo
+  -user/repo
+
+  # Skip repositories matching a given pattern
+  user/repo-*
+  {user1, user2, user3}/*
+
+  # Include back a previously skipped repository
+  org/repo
+  +org/include-this-repo
+```
+
+> ℹ️ Unlike basic pattern matching, patterns are always tested against the full repository handle (the user will not be implicitly added)
+
+> ⚠️ As patterns may contain commas, be sure to use newlines rather than commas as separator to ensure patterns are correctly parsed
 
 ## 🪛 Using presets
 
@@ -73,7 +128,7 @@ Options resolution is done in the following order:
     config_presets: https://raw.githubusercontent.com/lowlighter/metrics/presets/lunar-red/preset.yaml
 ```
 
-Some presets are hosted on this repository on the [`@presets`](https://github.com/lowlighter/metrics/tree/presets) branch and can be used directly by using using their identifier prefixed by an arobase (`@`).
+Some presets are hosted on this repository on the [`@presets`](https://github.com/lowlighter/metrics/tree/presets) branch and can be used directly by using their identifier prefixed by an arobase (`@`).
 
 *Example: using a pre-defined configuration preset*
 ```yaml
@@ -82,7 +137,7 @@ Some presets are hosted on this repository on the [`@presets`](https://github.co
     config_presets: "@lunar-red"
 ```
 
-> ⚠️ `🔐 Tokens` and options marked with `⏯️ Cannot be preset`, as they suggest, cannot be preset and thus requires to be explicitely defined to be set.
+> ⚠️ `🔐 Tokens` and options marked with `⏯️ Cannot be preset`, as they suggest, cannot be preset and thus requires to be explicitly defined to be set.
 
 > ℹ️ Presets configurations use [schemas](https://github.com/lowlighter/metrics/tree/presets/%40schema) to ensure compatibility between format changes
 
@@ -121,7 +176,7 @@ Additional JavaScript can be injected using `extras_js` option.
 ```
 
 > ℹ️ JavaScript is executed in puppeteer context during the rendering phase, **not** in *metrics* context.
-> It will be possible to access `document` and all other features accessibles like if the SVG was opened in a browser page
+> It will be possible to access `document` and all other features accessible like if the SVG was opened in a browser page
 
 > 💡 If you make an heavy use of this option, creating a [community templates](/source/templates/community/README.md) may be a better alternative
 
@@ -230,25 +285,37 @@ It is possible to generate a self-contained HTML file containing `✨ Metrics in
 
 ## 🧶 Configuring output action
 
+Before configuring output action, ensure that workflows permissions are properly set.
+These can be changed either through repository settings in Actions tab:
+
+![Setting workflows permissions](/.github/readme/imgs/setup_workflow_permissions.light.png#gh-light-mode-only)
+![Setting workflows permissions](/.github/readme/imgs/setup_workflow_permissions.dark.png#gh-dark-mode-only)
+
+Or more granulary [at job or workflow level](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
+
 ### Using commits (default)
 
-Use `config_output: commit` to make the action directly push changes to `committer_branch` with a commit.
+Use `output_action: commit` to make the action directly push changes to `committer_branch` with a commit.
 A custom commit message can be used through `committer_message`.
 
 > 💡 *metrics* will automatically ignore push events with a commit message containing `[Skip GitHub Action]` or `Auto-generated metrics for run #` to avoid infinite loops. Note that by default, GitHub already ignore events pushed by `${{ github.token }}` or containing `[skip ci]` in commit message
 
 *Example: push output to metrics-renders branch rather than the default branch*
 ```yaml
-- uses: lowlighter/metrics@latest
-  with:
-    output_action: commit
-    committer_branch: metrics-renders
-    committer_message: "chore: update metrics"
+metrics:
+  permissions:
+    contents: write
+  steps:
+    - uses: lowlighter/metrics@latest
+      with:
+        output_action: commit
+        committer_branch: metrics-renders
+        committer_message: "chore: update metrics"
 ```
 
 ### Using pull requests
 
-Use `config_output: pull-request` to make the action open a new pull request and push changes from the same run on it.
+Use `output_action: pull-request` to make the action open a new pull request and push changes from the same run on it.
 
 The last step should use either `pull-request-merge`, `pull-request-squash` or `pull-request-rebase` to merge changes to `committer_branch`.
 
@@ -256,63 +323,74 @@ The last step should use either `pull-request-merge`, `pull-request-squash` or `
 
 *Example: push two outputs using a merge pull request*
 ```yaml
-- uses: lowlighter/metrics@latest
-  with:
-    filename: my-metrics-0.svg
-    output_action: pull-request
+metrics:
+  permissions:
+    contents: write
+    pull-requests: write
+  steps:
+    - uses: lowlighter/metrics@latest
+      with:
+        filename: my-metrics-0.svg
+        output_action: pull-request
 
-- uses: lowlighter/metrics@latest
-  with:
-    filename: my-metrics-1.svg
-    output_action: pull-request-merge
+    - uses: lowlighter/metrics@latest
+      with:
+        filename: my-metrics-1.svg
+        output_action: pull-request-merge
 ```
 
 ### Using gists
 
-Use `config_output: gist` to push output to a [GitHub gist](https://gist.github.com) instead.
+Use `output_action: gist` to push output to a [GitHub gist](https://gist.github.com) instead.
 It is required to provide a gist id to `committer_gist` option to make it work.
 
 > 💡 This feature will use `token` instead of `committer_token` to push changes, so `gists` scope must be granted to the original `token` first
 
 *Example: push output to a gist*
 ```yaml
-- uses: lowlighter/metrics@latest
-  with:
-    output_action: gist
-    committer_gist: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+metrics:
+  steps:
+    - uses: lowlighter/metrics@latest
+      with:
+        output_action: gist
+        committer_gist: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 ### Manual handling
 
-Use `config_ouput: none` to perform custom processing with outputs.
+Use `output_action: none` to perform custom processing with outputs.
 They will be available under `/metrics_renders/{filename}` in the runner.
 
 *Example: generate outputs and manually push them*
 ```yaml
-- name: Checkout repository
-  uses: actions/checkout@v2
-    with:
-      fetch-depth: 0
+metrics:
+  permissions:
+    contents: write
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-- uses: lowlighter/metrics@latest
-  with:
-    output_action: none
+    - uses: lowlighter/metrics@latest
+      with:
+        output_action: none
 
-- uses: lowlighter/metrics@latest
-  run: |
-    set +e
-    git checkout metrics-renders
-    git config user.name github-actions[bot]
-    git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-    sudo mv /metrics_renders/* ./
-    git add --all
-    git commit -m "chore: push metrics"
-    git push
+    - uses: lowlighter/metrics@latest
+      run: |
+        set +e
+        git checkout metrics-renders
+        git config user.name github-actions[bot]
+        git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+        sudo mv /metrics_renders/* ./
+        git add --all
+        git commit -m "chore: push metrics"
+        git push
 ```
 
 ## ♻️ Retrying automatically failed rendering and output action
 
-Rendering is subject to external factors and can fail ocassionaly.
+Rendering is subject to external factors and can fail occasionally.
 Use `retries` and `retries_delay` options to automatically retry rendering.
 
 *Example: retry render up to 3 times (wait 5 minutes between each fail)*
@@ -323,7 +401,7 @@ Use `retries` and `retries_delay` options to automatically retry rendering.
     retries_delay: 300
 ```
 
-Output action is also subject to GitHub API rate-limiting and overall health status and can fail ocassionaly.
+Output action is also subject to GitHub API rate-limiting and overall health status and can fail occasionally.
 Use `retries_output_action` and `retries_delay_output_action` options to automatically retry output action.
 
 > 💡 As output action is a separate step from rendering, render step won't be called again
@@ -338,7 +416,7 @@ Use `retries_output_action` and `retries_delay_output_action` options to automat
 
 ## 🗜️ Optimize SVG output
 
-To reduce filesize and decrease loading time, *metrics* offers several optimization options, such as purging unused CSS and style minification, XML pretty-pretting (which also reduce diffs between changes) and general SVG optimation (still experimental).
+To reduce filesize and decrease loading time, *metrics* offers several optimization options, such as purging unused CSS and style minification, XML pretty-printing (which also reduce diffs between changes) and general SVG optimization (still experimental).
 
 > 💡 This option is enabled by default!
 
@@ -377,15 +455,14 @@ On forks, this feature is disable to take into account any changes you made on i
 <!--options-->
 <table>
   <tr>
-    <td align="center" nowrap="nowrap">Type</i></td><td align="center" nowrap="nowrap">Description</td>
+    <td align="center" nowrap="nowrap">Option</i></td><td align="center" nowrap="nowrap">Description</td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>token</code></h4></td>
     <td rowspan="2"><p>GitHub Personal Access Token</p>
-<p>No scopes are required by default, though some plugins and features may require additional scopes</p>
-<p>When using a configuration which does not requires a GitHub PAT, you may pass <code>NOT_NEEDED</code> instead.
-Note that when doing so, all defaults values using <code>.user.*</code> will not be applicable meaning that they need to be filled manually.
-Most of the time <code>user</code> option must also be set.</p>
+<p>No scopes are required by default, though some plugins and features may require additional scopes.</p>
+<p>When using a configuration which does not requires a GitHub PAT, it is possible to pass <code>NOT_NEEDED</code> instead.
+When doing so, any settings which defaults on user fetched values will not be templated (e.g. <code>.user.*</code>) and will usually need to be set manually.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -397,7 +474,7 @@ Most of the time <code>user</code> option must also be set.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>user</code></h4></td>
     <td rowspan="2"><p>GitHub username</p>
-<p>Defaults to <code>token</code> owner username.</p>
+<p>Defaults to <a href="/source/plugins/core/README.md#token"><code>token</code></a> owner username.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -408,7 +485,7 @@ Most of the time <code>user</code> option must also be set.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>repo</code></h4></td>
     <td rowspan="2"><p>GitHub repository</p>
-<p>This option is revevalant only for repositories templates</p>
+<p>This option is only revelant for repositories templates</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -421,7 +498,7 @@ Most of the time <code>user</code> option must also be set.</p>
     <td rowspan="2"><p>GitHub Token used to commit metrics</p>
 <p>Leave this to <code>${{ github.token }}</code> or <code>${{ secrets.GITHUB_TOKEN }}</code>, which is a special auto-generated token restricted to current repository scope.</p>
 <blockquote>
-<p>💡 When using <code>output_action: gist</code>, it will use <code>token</code> instead, since gists are outside of scope</p>
+<p>💡 When using <a href="/source/plugins/core/README.md#output_action"><code>output_action: gist</code></a>, it will use <a href="/source/plugins/core/README.md#token"><code>token</code></a> instead, since gists are outside of scope</p>
 </blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
@@ -434,7 +511,7 @@ Most of the time <code>user</code> option must also be set.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>committer_branch</code></h4></td>
     <td rowspan="2"><p>Target branch</p>
-<p>Default value is set to your repository default branch</p>
+<p>Defaults to current repository default branch</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -455,7 +532,7 @@ Most of the time <code>user</code> option must also be set.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>committer_gist</code></h4></td>
     <td rowspan="2"><p>Gist id</p>
-<p>Specify an existing gist id (can be retrieved from its URL) when using <code>output_action: gist</code>.</p>
+<p>Specify an existing gist id (can be retrieved from its URL) when using <a href="/source/plugins/core/README.md#output_action"><code>output_action: gist</code></a>.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -466,7 +543,7 @@ Most of the time <code>user</code> option must also be set.</p>
   <tr>
     <td nowrap="nowrap"><h4><code>filename</code></h4></td>
     <td rowspan="2"><p>Output path</p>
-<p>When using an asterisk (<code>*</code>), correct extension will automatically be applied according to <code>config_output</code> value</p>
+<p>When using an asterisk (<code>*</code>), correct extension will automatically be applied according to <a href="/source/plugins/core/README.md#config_output"><code>config_output</code></a> value</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -502,13 +579,16 @@ Most of the time <code>user</code> option must also be set.</p>
 <li><code>none</code>: just create file in <code>/metrics_renders</code> directory of action runner</li>
 <li><code>commit</code>: push output to <code>committer_branch</code></li>
 <li><code>pull-request</code>: push output to a new branch and open a pull request to <code>committer_branch</code></li>
-<li><code>pull-request-merge</code>: same as <code>pull-request</code> and additionaly merge pull request</li>
-<li><code>pull-request-squash</code>: same as <code>pull-request</code> and additionaly squash and merge pull request</li>
-<li><code>pull-request-rebase</code>: same as <code>pull-request</code> and additionaly rebase and merge pull request</li>
+<li><code>pull-request-merge</code>: same as <code>pull-request</code> and additionally merge pull request</li>
+<li><code>pull-request-squash</code>: same as <code>pull-request</code> and additionally squash and merge pull request</li>
+<li><code>pull-request-rebase</code>: same as <code>pull-request</code> and additionally rebase and merge pull request</li>
 <li><code>gist</code>: push output to <code>committer_gist</code></li>
 </ul>
 <blockquote>
 <p>💡 When using <code>pull-request</code>, you will need to set the last job with a <code>pull-request-*</code> action instead, else it won&#39;t be merged</p>
+</blockquote>
+<blockquote>
+<p>⚠️ As GitHub gists API does not support binary files upload, <code>gist</code> does not support <a href="/source/plugins/core/README.md#config_output"><code>config_output</code></a> set to either <code>png</code>, <code>jpeg</code> or <code>markdown-pdf</code></p>
 </blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
@@ -525,6 +605,9 @@ Most of the time <code>user</code> option must also be set.</p>
 <li><code>always</code>: always try to push changes</li>
 <li><code>data-changed</code>: skip changes if no data changed (e.g. like when only metadata changed)</li>
 </ul>
+<blockquote>
+<p>ℹ️ This option is only revelant when <a href="/source/plugins/core/README.md#config_output"><code>config_output: svg</code></a> is set</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -539,9 +622,9 @@ Most of the time <code>user</code> option must also be set.</p>
 <ul>
 <li><code>css</code>: purge and minify CSS styles</li>
 <li><code>xml</code>: pretty-print XML (useful to reduce diff)</li>
-<li><code>svg</code>: optimization with SVGO (experimental, require <code>--optimize-svg</code> experimental flag)</li>
+<li><code>svg</code>: optimization with SVGO (experimental, requires <a href="/source/plugins/core/README.md#experimental_features"><code>experimental_features: --optimize-svg</code></a>)</li>
 </ul>
-<p>Some templates may not support all options</p>
+<p>Templates may not always honour all provided options</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -558,7 +641,10 @@ Most of the time <code>user</code> option must also be set.</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.setup.community.templates</i></li>
+</ul>
 <b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br></td>
@@ -588,17 +674,23 @@ This is mostly useful for custom templates.</p>
   <tr>
     <td nowrap="nowrap"><b>type:</b> <code>json</code>
 <br>
-<b>default:</b> {}<br></td>
+<b>default:</b> <details><summary>→ Click to expand</summary><pre language="json"><code>{}</code></pre></details><br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>extras_css</code></h4></td>
     <td rowspan="2"><p>Extra CSS</p>
 <p>Custom CSS that will be injected in used template.
 Useful to avoid creating a new template just to tweak some styling</p>
+<blockquote>
+<p>💡 <em>metrics</em> tends to avoid using <code>!important</code> rules, which means that most styling can be overridden by this option when using <code>!important</code></p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.run.puppeteer.user.css</i></li>
+</ul>
 <b>type:</b> <code>string</code>
 <br></td>
   </tr>
@@ -607,12 +699,45 @@ Useful to avoid creating a new template just to tweak some styling</p>
     <td rowspan="2"><p>Extra JavaScript</p>
 <p>Custom JavaScript that will be executed during puppeteer rendering.
 Useful to avoid creating a new template just to tweak some content.</p>
-<p>Note that is it executed within puppeteer context and <strong>not</strong> <em>metrics</em> context.
+<blockquote>
+<p>⚠️ Note that is it executed within puppeteer context and <strong>not</strong> within <em>metrics</em> context.
+No access to fetched data or configuration will be offered through this context.
 It is run after transformations and optimizations, but just before resizing.</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
-    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code><br>
+    <td nowrap="nowrap">🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.run.puppeteer.user.js</i></li>
+</ul>
+<b>type:</b> <code>string</code>
+<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>github_api_rest</code></h4></td>
+    <td rowspan="2"><p>GitHub REST API endpoint</p>
+<p>Can be used to support <a href="https://github.com/enterprise">GitHub enterprises server</a>.
+Leave empty to use default endpoint.</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap">⏭️ Global option<br>
+<b>type:</b> <code>string</code>
+<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>github_api_graphql</code></h4></td>
+    <td rowspan="2"><p>GitHub GraphQL API endpoint</p>
+<p>Can be used to support <a href="https://github.com/enterprise">GitHub enterprises server</a>.
+Leave empty to use default endpoint.</p>
+<blockquote>
+<p>ℹ️ GraphQL octokit will automatically append <code>/graphql</code> to provided endpoint</p>
+</blockquote>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap">⏭️ Global option<br>
 <b>type:</b> <code>string</code>
 <br></td>
   </tr>
@@ -659,6 +784,7 @@ May increase filesize.</p>
     <td rowspan="2"><p>Use GitHub custom emojis</p>
 <p>GitHub supports additional emojis which are not registered in Unicode standard (:octocat:, :shipit:, :trollface:, ...)
 See full list at <a href="https://api.github.com/emojis">https://api.github.com/emojis</a>.</p>
+<p>This option has no effect when [`token: NOT_NEEDED``](/source/plugins/core/README.md#token) is set.</p>
 <p>May increase filesize</p>
 <img width="900" height="1" alt=""></td>
   </tr>
@@ -719,7 +845,7 @@ Size must be a supported icon size (12, 16 or 24).
   <tr>
     <td nowrap="nowrap"><h4><code>config_base64</code></h4></td>
     <td rowspan="2"><p>Base64-encoded images</p>
-<p>Enable this option to make self-contained ouput (i.e. with no external links)</p>
+<p>Enable this option to make self-contained output (i.e. with no external links)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -740,9 +866,9 @@ It can result in cropped or oversized outputs.</p>
 </ul>
 <p>Each value need to respect the following format:</p>
 <ul>
-<li>{number}</li>
-<li>{number} + {number}%</li>
-<li>{number}%</li>
+<li><code>{number}</code></li>
+<li><code>{number} + {number}%</code></li>
+<li><code>{number}%</code></li>
 </ul>
 <p>Percentage are relative to computed dimensions</p>
 <img width="900" height="1" alt=""></td>
@@ -780,6 +906,10 @@ It can result in cropped or oversized outputs.</p>
   </tr>
   <tr>
     <td nowrap="nowrap">⏯️ Cannot be preset<br>
+🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.setup.community.presets</i></li>
+</ul>
 <b>type:</b> <code>array</code>
 <i>(comma-separated)</i>
 <br></td>
@@ -837,6 +967,24 @@ It can result in cropped or oversized outputs.</p>
 <b>default:</b> 120<br></td>
   </tr>
   <tr>
+    <td nowrap="nowrap"><h4><code>clean_workflows</code></h4></td>
+    <td rowspan="2"><p>Clean previous workflows jobs</p>
+<p>This can be used to clean up Action tabs from previous workflows runs.</p>
+<p>Use <code>all</code> to clean up workflows runs in any state.</p>
+<blockquote>
+<p>⚠️ When reporting issues, it is <strong>required</strong> to provide logs so it can be investigated and reproduced.
+Be sure to disable this option when asking for help or submitting bug reports.</p>
+</blockquote>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap">⏯️ Cannot be preset<br>
+<b>type:</b> <code>array</code>
+<i>(comma-separated)</i>
+<br>
+<b>allowed values:</b><ul><li>cancelled</li><li>failure</li><li>success</li><li>skipped</li><li>startup_failure</li><li>timed_out</li><li>all</li></ul></td>
+  </tr>
+  <tr>
     <td nowrap="nowrap"><h4><code>delay</code></h4></td>
     <td rowspan="2"><p>Job delay</p>
 <p>This can be used to avoid triggering GitHub abuse mechanics on large workflows</p>
@@ -849,6 +997,61 @@ It can result in cropped or oversized outputs.</p>
 ≤ 3600)</i>
 <br>
 <b>default:</b> 0<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>quota_required_rest</code></h4></td>
+    <td rowspan="2"><p>Minimum GitHub REST API requests quota required to run</p>
+<p>Action will cancel itself without any errors if requirements are not met</p>
+<p>This option has no effect when <a href="/source/plugins/core/README.md#token"><code>token: NOT_NEEDED</code></a> is set</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
+<i>(0 ≤
+𝑥
+≤ 5000)</i>
+<br>
+<b>default:</b> 200<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>quota_required_graphql</code></h4></td>
+    <td rowspan="2"><p>Minimum GitHub GraphQL API requests quota required to run</p>
+<p>Action will cancel itself without any errors if requirements are not met</p>
+<p>This option has no effect when <a href="/source/plugins/core/README.md#token"><code>token: NOT_NEEDED</code></a> is set</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
+<i>(0 ≤
+𝑥
+≤ 5000)</i>
+<br>
+<b>default:</b> 200<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>quota_required_search</code></h4></td>
+    <td rowspan="2"><p>Minimum GitHub Search API requests quota required to run</p>
+<p>Action will cancel itself without any errors if requirements are not met</p>
+<p>This option has no effect when <a href="/source/plugins/core/README.md#token"><code>token: NOT_NEEDED</code></a> is set</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>number</code>
+<i>(0 ≤
+𝑥
+≤ 30)</i>
+<br>
+<b>default:</b> 0<br></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><h4><code>notice_releases</code></h4></td>
+    <td rowspan="2"><p>Notice about new releases of metrics</p>
+<img width="900" height="1" alt=""></td>
+  </tr>
+  <tr>
+    <td nowrap="nowrap"><b>type:</b> <code>boolean</code>
+<br>
+<b>default:</b> yes<br></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>use_prebuilt_image</code></h4></td>
@@ -880,7 +1083,7 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
   <tr>
     <td nowrap="nowrap"><h4><code>debug</code></h4></td>
     <td rowspan="2"><p>Debug mode</p>
-<p>This setting is automatically enable if a job fail (useful with <code>plugins_errors_fatal: yes</code>)</p>
+<p>This setting is automatically enable if a job fail (useful with <a href="/source/plugins/core/README.md#plugins_errors_fatal"><code>plugins_errors_fatal: yes</code></a>)</p>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -898,6 +1101,10 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
   <tr>
     <td nowrap="nowrap">⏯️ Cannot be preset<br>
 🔧 For development<br>
+🌐 Web instances must configure <code>settings.json</code>:
+<ul>
+<li><i>metrics.npm.optional.libxml2</i></li>
+</ul>
 <b>type:</b> <code>boolean</code>
 <br>
 <b>default:</b> no<br></td>
@@ -907,10 +1114,22 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
     <td rowspan="2"><p>Debug flags</p>
 <ul>
 <li><code>--cakeday</code>: simulate registration anniversary</li>
-<li><code>--hireable</code>: simulate &quot;Available for hire&quot; account setting</li>
-<li><code>--halloween</code>: enable halloween colors</li>
+<li><code>--halloween</code>: enable halloween colors <em>(only first color scheme will be applied if multiple are specified)</em></li>
+<li><code>--winter</code>: enable winter colors <em>(only first color scheme will be applied if multiple are specified)</em></li>
 <li><code>--error</code>: force render error</li>
+<li><code>--puppeteer-debug</code>: enable puppeteer debug mode*</li>
+<li><code>--puppeteer-disable-headless</code>: disable puppeteer headless mode <em>(requires a graphical environment)</em>*</li>
+<li><code>--puppeteer-wait-load</code>: override puppeteer wait events*</li>
+<li><code>--puppeteer-wait-domcontentloaded</code>: override puppeteer wait events*</li>
+<li><code>--puppeteer-wait-networkidle0</code>: override puppeteer wait events*</li>
+<li><code>--puppeteer-wait-networkidle2</code>: override puppeteer wait events*</li>
 </ul>
+<blockquote>
+<p><em>* 🌐 Web instances needs to have <a href="/source/plugins/core/README.md#debug"><code>debug</code></a> set in <code>settings.json</code> for these flags to be supported.</em></p>
+</blockquote>
+<blockquote>
+<p>⚠️ No backward compatibility is guaranteed for these features, they are only meant for debugging purposes.</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -919,7 +1138,7 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
 <b>type:</b> <code>array</code>
 <i>(space-separated)</i>
 <br>
-<b>allowed values:</b><ul><li>--cakeday</li><li>--hireable</li><li>--halloween</li><li>--error</li></ul></td>
+<b>allowed values:</b><ul><li>--cakeday</li><li>--halloween</li><li>--winter</li><li>--error</li><li>--puppeteer-debug</li><li>--puppeteer-disable-headless</li><li>--puppeteer-wait-load</li><li>--puppeteer-wait-domcontentloaded</li><li>--puppeteer-wait-networkidle0</li><li>--puppeteer-wait-networkidle2</li></ul></td>
   </tr>
   <tr>
     <td nowrap="nowrap"><h4><code>debug_print</code></h4></td>
@@ -936,7 +1155,9 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
   <tr>
     <td nowrap="nowrap"><h4><code>dryrun</code></h4></td>
     <td rowspan="2"><p>Dry-run</p>
-<p>Contrary to <code>output_action: none</code>, output file won&#39;t be available in <code>/metrics_renders</code> directory</p>
+<blockquote>
+<p>⚠️ Unlike <a href="/source/plugins/core/README.md#output_action"><code>output_action: none</code></a>, output file won&#39;t be available in <code>/metrics_renders</code> directory</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>
@@ -949,7 +1170,9 @@ This option has no effects on forks (images will always be rebuilt from Dockerfi
   <tr>
     <td nowrap="nowrap"><h4><code>experimental_features</code></h4></td>
     <td rowspan="2"><p>Experimental features</p>
-<p>No backward compatibility is guaranteed for these features</p>
+<blockquote>
+<p>⚠️ No backward compatibility is guaranteed for these features</p>
+</blockquote>
 <img width="900" height="1" alt=""></td>
   </tr>
   <tr>

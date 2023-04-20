@@ -2,7 +2,7 @@
   - source/app/action/**
   - source/app/web/**
 ✨ metrics insights:
-  - source/app/web/statics/about/**
+  - source/app/web/statics/insights/**
 
 🧩 plugins:
   - source/plugins/**
@@ -15,7 +15,7 @@
   - source/app/metrics/**
   - source/plugins/core/**
 
-🎲 community plugin:
+🎲 community plugins:
   - source/plugins/community/**
 
 🏆 plugin achievements:
@@ -24,6 +24,8 @@
   - source/plugins/activity/**
 🌸 plugin anilist:
   - source/plugins/anilist/**
+📆 plugin calendar:
+  - source/plugins/calendar/**
 ♐ plugin code:
   - source/plugins/code/**
 🏅 plugin contributors:
@@ -42,6 +44,8 @@
   - source/plugins/isocalendar/**
 🈷️ plugin languages:
   - source/plugins/languages/**
+🗳️ plugin leetcode:
+  - source/plugins/leetcode/**
 📜 plugin licenses:
   - source/plugins/licenses/**
 👨‍💻 plugin lines:

@@ -1,19 +1,21 @@
 //Legacy import
-import {recent as recent_analyzer} from "./../languages/analyzers.mjs"
+import { recent as recent_analyzer } from "./../languages/analyzers.mjs"
 
 //Setup
 export default async function({login, data, rest, imports, q, account}, {enabled = false, extras = false, ...defaults} = {}) {
   //Plugin execution
   try {
     //Check if plugin is enabled and requirements are met
-    if ((!enabled) || (!q.habits))
+    if ((!q.habits) || (!imports.metadata.plugins.habits.enabled(enabled, {extras})))
       return null
 
     //Load inputs
-    let {from, days, facts, charts, "charts.type":_charts, trim} = imports.metadata.plugins.habits.inputs({data, account, q}, defaults)
+    let {from, days, facts, charts, "charts.type": _charts, trim, "languages.limit": limit, "languages.threshold": threshold, skipped = []} = imports.metadata.plugins.habits.inputs({data, account, q}, defaults)
+    threshold = (Number(threshold.replace(/%$/, "")) || 0) / 100
+    skipped.push(...data.shared["repositories.skipped"])
 
     //Initialization
-    const habits = {facts, charts, trim, lines:{average:{chars:0}}, commits:{fetched:0, hour:NaN, hours:{}, day:NaN, days:{}}, indents:{style:"", spaces:0, tabs:0}, linguist:{available:false, ordered:[], languages:{}}}
+    const habits = {facts, charts, trim, lines: {average: {chars: 0}}, commits: {fetched: 0, hour: NaN, hours: {}, day: NaN, days: {}}, indents: {style: "", spaces: 0, tabs: 0}, linguist: {available: false, ordered: [], languages: {}}}
     const pages = Math.ceil(from / 100)
     const offset = data.config.timezone?.offset ?? 0
 
@@ -23,7 +25,7 @@ export default async function({login, data, rest, imports, q, account}, {enabled
     try {
       for (let page = 1; page <= pages; page++) {
         console.debug(`metrics/compute/${login}/plugins > habits > loading page ${page}`)
-        events.push(...(await rest.activity.listEventsForAuthenticatedUser({username:login, per_page:100, page})).data)
+        events.push(...(await rest.activity.listEventsForAuthenticatedUser({username: login, per_page: 100, page})).data)
       }
     }
     catch {
@@ -35,6 +37,7 @@ export default async function({login, data, rest, imports, q, account}, {enabled
     const commits = events
       .filter(({type}) => type === "PushEvent")
       .filter(({actor}) => account === "organization" ? true : actor.login?.toLocaleLowerCase() === login.toLocaleLowerCase())
+      .filter(({repo: {name: repo}}) => imports.filters.repo(repo, skipped))
       .filter(({created_at}) => new Date(created_at) > new Date(Date.now() - days * 24 * 60 * 60 * 1000))
     console.debug(`metrics/compute/${login}/plugins > habits > filtered out ${commits.length} push events over last ${days} days`)
     habits.commits.fetched = commits.length
@@ -51,8 +54,8 @@ export default async function({login, data, rest, imports, q, account}, {enabled
     ]
       .filter(({status}) => status === "fulfilled")
       .map(({value}) => value)
-      .flatMap(files => files.map(file => ({name:imports.paths.basename(file.filename), patch:file.patch ?? ""})))
-      .map(({name, patch}) => ({name, patch:patch.split("\n").filter(line => /^[+]/.test(line)).map(line => line.substring(1)).join("\n")}))
+      .flatMap(files => files.map(file => ({name: imports.paths.basename(file.filename), patch: file.patch ?? ""})))
+      .map(({name, patch}) => ({name, patch: patch.split("\n").filter(line => /^[+]/.test(line)).map(line => line.substring(1)).join("\n")}))
 
     //Commit day
     {
@@ -63,7 +66,7 @@ export default async function({login, data, rest, imports, q, account}, {enabled
         habits.commits.days[day] = (habits.commits.days[day] ?? 0) + 1
       habits.commits.days.max = Math.max(...Object.values(habits.commits.days))
       //Compute day with most commits
-      habits.commits.day = days.length ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][Object.entries(habits.commits.days).sort(([_an, a], [_bn, b]) => b - a).map(([day, _occurence]) => day)[0]] ?? NaN : NaN
+      habits.commits.day = days.length ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][Object.entries(habits.commits.days).sort(([_an, a], [_bn, b]) => b - a).map(([day, _occurrence]) => day)[0]] ?? NaN : NaN
     }
 
     //Commit hour
@@ -75,7 +78,7 @@ export default async function({login, data, rest, imports, q, account}, {enabled
         habits.commits.hours[hour] = (habits.commits.hours[hour] ?? 0) + 1
       habits.commits.hours.max = Math.max(...Object.values(habits.commits.hours))
       //Compute hour with most commits
-      habits.commits.hour = hours.length ? `${Object.entries(habits.commits.hours).sort(([_an, a], [_bn, b]) => b - a).map(([hour, _occurence]) => hour)[0]}`.padStart(2, "0") : NaN
+      habits.commits.hour = hours.length ? `${Object.entries(habits.commits.hours).sort(([_an, a], [_bn, b]) => b - a).map(([hour, _occurrence]) => hour)[0]}`.padStart(2, "0") : NaN
     }
 
     //Indent style
@@ -97,66 +100,39 @@ export default async function({login, data, rest, imports, q, account}, {enabled
     }
 
     //Linguist
-    if ((extras) && (charts)) {
+    if ((charts) && (imports.metadata.plugins.habits.extras("charts", {extras, error: false}))) {
       //Check if linguist exists
       console.debug(`metrics/compute/${login}/plugins > habits > searching recently used languages using linguist`)
       if (patches.length) {
         //Call language analyzer (note: using content from other plugin is usually disallowed, this is mostly for legacy purposes)
         habits.linguist.available = true
-        const {total, stats} = await recent_analyzer({login, data, imports, rest, account}, {days, load:from || 1000, tempdir:"habits"})
+        const {total, stats, colors} = await recent_analyzer({login, data, imports, rest, account}, {days, load: from || 1000, tempdir: "habits"})
         habits.linguist.languages = Object.fromEntries(Object.entries(stats).map(([language, value]) => [language, value / total]))
-        habits.linguist.ordered = Object.entries(habits.linguist.languages).sort(([_an, a], [_bn, b]) => b - a)
+        habits.linguist.ordered = Object.entries(habits.linguist.languages).sort(([_an, a], [_bn, b]) => b - a).filter(([_, value]) => value > threshold).slice(0, limit || Infinity)
+        habits.linguist.colors = colors
       }
-      else
+      else {
         console.debug(`metrics/compute/${login}/plugins > habits > linguist not available`)
-
+      }
     }
 
-    //Generating charts with chartist
-    if (_charts === "chartist") {
+    //Generating charts
+    if ((["graph", "chartist"].includes(_charts)) && (imports.metadata.plugins.habits.extras("charts.type", {extras}))) {
       console.debug(`metrics/compute/${login}/plugins > habits > generating charts`)
       habits.charts = await Promise.all([
-        {type:"line", data:{...empty(24), ...Object.fromEntries(Object.entries(habits.commits.hours).filter(([k]) => !Number.isNaN(+k)))}, low:0, high:habits.commits.hours.max},
-        {type:"line", data:{...empty(7), ...Object.fromEntries(Object.entries(habits.commits.days).filter(([k]) => !Number.isNaN(+k)))}, low:0, high:habits.commits.days.max, labels:["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], half:true},
-        {type:"pie", data:habits.linguist.languages, half:true},
-      ].map(({type, data, high, low, ref, labels = {}, half = false}) => {
-        const options = {
-          width:480 * (half ? 0.45 : 1),
-          height:160,
-          fullWidth:true,
-        }
-        const values = {
-          labels:Object.keys(data).map(key => labels[key] ?? key),
-          series:Object.values(data),
-        }
-        if (type === "line") {
-          Object.assign(options, {
-            showPoint:true,
-            axisX:{showGrid:false},
-            axisY:{showLabel:false, offset:20, labelInterpolationFnc:value => imports.format(value), high, low, referenceValue:ref},
-            showArea:true,
-          })
-          Object.assign(values, {
-            series:[Object.values(data)],
-          })
-        }
-        return imports.chartist(type, options, values)
+        {type: "line", data: {...empty(24), ...Object.fromEntries(Object.entries(habits.commits.hours).filter(([k]) => !Number.isNaN(+k)))}, ticks: 24, low: 0, high: habits.commits.hours.max},
+        {type: "line", data: {...empty(7), ...Object.fromEntries(Object.entries(habits.commits.days).filter(([k]) => !Number.isNaN(+k)))}, ticks: 7, low: 0, high: habits.commits.days.max, labels: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], half: true},
+        {type: "pie", data: Object.fromEntries(Object.entries(habits.linguist.languages).map(([k, v]) => [k, (100 * v).toFixed(2)])), colors: habits.linguist.colors, half: true},
+      ].map(({type, data, high, low, ticks, colors = null, labels = null, half = false}) => {
+        const width = 480 * (half ? 0.45 : 1)
+        const height = 160
+        if (type === "line")
+          return imports.Graph.line(Object.entries(data).map(([x, y]) => ({x: +x, y})), {low, high, ticks, labels, width, height})
+        console.log(data)
+        if (type === "pie")
+          return imports.Graph.pie(data, {colors, width, height})
+        return ""
       }))
-      data.postscripts.push(`(${function(format) {
-        document.querySelectorAll(".habits .chartist").forEach(chart => {
-          chart.querySelectorAll(".habits .chartist .ct-point").forEach(node => {
-            const [x, y, value] = ["x1", "y1", "ct:value"].map(attribute => node.getAttribute(attribute))
-            if (Number(value)) {
-              const text = document.createElementNS("http://www.w3.org/2000/svg", "text")
-              text.setAttributeNS(null, "x", x)
-              text.setAttributeNS(null, "y", y - 5)
-              text.setAttributeNS(null, "class", "ct-post")
-              text.appendChild(document.createTextNode(format(value)))
-              node.parentNode.append(text)
-            }
-          })
-        })
-      }})(${imports.format.toString()})`)
     }
 
     //Results
@@ -164,9 +140,7 @@ export default async function({login, data, rest, imports, q, account}, {enabled
   }
   //Handle errors
   catch (error) {
-    if (error.error?.message)
-      throw error
-    throw {error:{message:"An error occured", instance:error}}
+    throw imports.format.error(error)
   }
 }
 

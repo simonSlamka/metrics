@@ -103,6 +103,12 @@
   .field.error svg {
     fill: #cb2431;
   }
+  .field.warning {
+    color: #D79533;
+  }
+  .field.warning svg {
+    fill: #D79533;
+  }
 
 /* Displays */
   .row {
@@ -140,6 +146,10 @@
   }
   .no-margin-top {
     margin-top: 0px;
+  }
+  .margin-lr-auto {
+    margin-left: auto;
+    margin-right: auto;
   }
 
 /* User avatar */
@@ -197,13 +207,12 @@
   }
   .contribution .gauge text {
     fill: currentColor;
-    font-size: 12px;
-    font-size: 15px;
-    letter-spacing: -2px;
+    font-size: 13px;
   }
   .contribution .gauge {
-    margin: 0 4px;
+    margin: 0 6px;
     color: inherit;
+    transform: scale(1.4) translateY(1px);
   }
   .contribution .icon {
     fill: currentColor;
@@ -276,6 +285,12 @@
     justify-content: flex-end;
     font-size: 12px;
   }
+  .footnote.warning {
+    color: #D79533;
+  }
+  .footnote.warning svg {
+    fill: #D79533;
+  }
 
 /* Follow-up */
   .followup.legend {
@@ -339,15 +354,6 @@
     margin: 0;
     list-style-type: none;
     padding-left: 37px;
-  }
-
-/* Chartist */
-/* purgecss ignore */
-  .chartist .ct-post {
-    fill: rgba(127, 127, 127, 0.8) !important;
-    color: rgba(127, 127, 127, 0.8) !important;
-    font-size: 9px;
-    text-anchor: middle;
   }
 
 /* Footer */
@@ -414,6 +420,12 @@
     text-anchor: middle;
     font-weight: 600;
   }
+  .gauge text.secondary {
+    fill: currentColor;
+    font-size: 25px;
+    font-family: monospace;
+    text-anchor: middle;
+  }
   .gauge .title {
     font-size: 18px;
     color: #777777;
@@ -447,6 +459,9 @@
     height: 315px;
     margin: 8px 14px 4px;
     border-radius: 5px;
+  }
+  .screenshot-content {
+    margin-left: 12px;
   }
 
   svg.large .audits {
@@ -833,6 +848,58 @@
     max-width: 900px;
   }
 
+/* Calendar */
+  svg.calendar {
+    margin-left: 13px;
+    margin-top: 4px;
+  }
+
+  svg.calendar text {
+    font-size: 18px;
+    fill: currentColor;
+  }
+
+/* Diff stats */
+  .diff-handle {
+    color: #58a6ff;
+    max-width: 200px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .large .diff-handle {
+    max-width: 400px;
+  }
+  .diff-box {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-left: 1px;
+    background-color: rgba(110, 118, 129, 0.4);
+    border: 1px solid rgba(246, 240, 251, 0.1);
+  }
+  .diff-box:first-child {
+    margin-left: 9px;
+  }
+  .diff-box.added {
+    background-color: rgb(63, 185, 80);
+  }
+  .diff-box.deleted {
+    background-color: rgb(218, 54, 51);
+  }
+  .diff-stats {
+    margin-left: 4px;
+    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    font-weight: bold;
+    font-size: 12px;
+    white-space: pre;
+  }
+  .added {
+    color: rgb(63, 185, 80);
+  }
+  .deleted {
+    color: rgb(218, 54, 51);
+  }
+
 /* People */
   .people {
     padding: 0 10px;
@@ -856,6 +923,17 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+  .project .items, .project-items {
+    padding-left: 11px;
+  }
+  .project .items .text, .project-items .text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 426px;
+  }
+  .large .project .items .text, .large .project-items .text {
+    width: 916px;
   }
 
 /* Star lists */
@@ -962,6 +1040,88 @@
     border-radius: 7px;
   }
 
+/* Steam */
+  .steam .games {
+    margin-left: 28px;
+  }
+  .steam .media {
+    display: flex;
+    margin-bottom: 4px;
+    width: 450px;
+  }
+  .steam .media img {
+    margin: 0 10px;
+    border-radius: 7px;
+  }
+  .steam .media > img {
+    height: 32px;
+    width: 32px;
+  }
+  .steam .media .about {
+    flex-grow: 1;
+  }
+  .steam .media .name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    line-height: 14px;
+    color: #58a6ff;
+  }
+  .steam .media .infos {
+    font-size: 12px;
+    color: #666666;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .steam .media .infos > div {
+    display: inline-flex;
+    align-items: center;
+    margin-right: 16px;
+  }
+  .steam .media .infos svg {
+    fill: currentColor;
+    height: 12px;
+    width: 12px;
+    margin: 0;
+    margin-right: 4px;
+  }
+  .steam .media .achievement img {
+    height: 22px;
+    width: 22px;
+    margin-right: 6px;
+  }
+  .steam .media .achievement .name {
+    display: flex;
+    justify-content: space-between;
+  }
+  .steam .media .achievement .name > div:first-child {
+    max-width: 280px;
+  }
+  .steam .media .achievement .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    width: 344px;
+    max-height: 38px;
+    font-size: 12px;
+    white-space: normal;
+    /* May not work in all browsers */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .steam .media .achievement .unlocked {
+    font-size: 12px;
+    color: #666666;
+    font-style: italic;
+    flex-shrink: 0;
+  }
+  .steam .media .achievement .ellipsis {
+    margin-left: 18px;
+  }
+
 /* Licenses */
   .licenses {
     display: flex;
@@ -1061,18 +1221,29 @@
     border-radius: 5px;
     background-color: #7777771F;
   }
-  .sponsors .goal-text {
+  .sponsors .goal-text, .sponsors .past-text {
     display: flex;
     justify-content: space-between;
     font-style: italic;
-    font-size: 10px;
+    font-size: 12px;
     margin-bottom: 4px;
+  }
+  .sponsors .past-text {
+    margin: 8px 0 2px;
   }
   .sponsors .avatar {
     margin: 2px;
   }
-  .sponsors .avatar.past {
-    opacity: 0.3;
+  .sponsorships.goal {
+    display: flex;
+    align-items: center;
+  }
+  .sponsorships.goal .bold {
+    font-weight: bold;
+  }
+  .sponsorships.goal img {
+    width: 38px;
+    margin-right: 8px;
   }
 
 /* Stackoverflow */
@@ -1204,7 +1375,6 @@
     margin-bottom: -50px;
     margin-top: 36px;
     display: none;
-    position: relative;
   }
   .achievement .value {
     margin-left: 46px;
@@ -1257,6 +1427,40 @@
     border-radius: 10px;
     background-color: #030D21;
     overflow: hidden;
+  }
+
+/* LeetCode */
+  .leetcode.subsection {
+    padding-left: 28px;
+  }
+  .leetcode .topics {
+    margin-left: 20px;
+  }
+  .leetcode .count {
+    font-size: 10px;
+    color: #666666;
+  }
+  .leetcode .fundamental .dot, .leetcode .easy.gauge .gauge-arc {
+    color: #2CBB5D;
+  }
+  .leetcode .intermediate .dot, .leetcode .medium.gauge .gauge-arc {
+    color: #FFC01E;
+  }
+  .leetcode .advanced .dot, .leetcode .hard.gauge .gauge-arc {
+    color: #EF4743;
+  }
+  .leetcode .all.gauge .gauge-arc {
+    color: rgb(255, 161, 22);
+  }
+  .leetcode {
+    align-items: flex-start;
+  }
+  .leetcode .infos {
+    margin-bottom: 3px;
+  }
+  .leetcode .infos .date {
+    font-size: 10px;
+    color: #666666;
   }
 
 /* Code snippet */
@@ -1400,20 +1604,6 @@
     height: auto;
   }
 
-/* Fade animation */
-  .af {
-    opacity: 0;
-    animation: animation-fade 1s ease forwards;
-  }
-  @keyframes animation-fade {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
 /* Twemoji and GitHub emoji */
   .twemoji, .gemoji {
     height: 1em;
@@ -1454,6 +1644,10 @@
     --color-calendar-halloween-graph-day-L2-bg: #ffc501;
     --color-calendar-halloween-graph-day-L3-bg: #fe9600;
     --color-calendar-halloween-graph-day-L4-bg: #03001c;
+    --color-calendar-winter-graph-day-L1-bg: #0a3069;
+    --color-calendar-winter-graph-day-L2-bg: #0969da;
+    --color-calendar-winter-graph-day-L3-bg: #54aeff;
+    --color-calendar-winter-graph-day-L4-bg: #b6e3ff;
     --color-calendar-graph-day-L4-border: rgba(27,31,35,0.06);
     --color-calendar-graph-day-L3-border: rgba(27,31,35,0.06);
     --color-calendar-graph-day-L2-border: rgba(27,31,35,0.06);
